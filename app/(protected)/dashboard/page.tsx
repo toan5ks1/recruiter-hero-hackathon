@@ -1,31 +1,33 @@
-import { getCurrentUser } from "@/lib/session";
-import { constructMetadata } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { DashboardHeader } from "@/components/dashboard/header";
-import { EmptyPlaceholder } from "@/components/shared/empty-placeholder";
+"use client";
 
-export const metadata = constructMetadata({
-  title: "Dashboard – SaaS Starter",
-  description: "Create and manage content.",
-});
+import { useState } from "react";
 
-export default async function DashboardPage() {
-  const user = await getCurrentUser();
+import { ResultsList } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { JDInput } from "@/components/jd/jd-input";
+import { ResumeInput } from "@/components/resume/resume-input";
+import ResumeOverview from "@/components/resume/resume-overview";
+
+export default function DashboardPage() {
+  const [jd, setJd] = useState("");
+  const [results, setResults] = useState<ResultsList>({});
 
   return (
-    <>
-      <DashboardHeader
-        heading="Dashboard"
-        text={`Current Role : ${user?.role} — Change your role in settings.`}
-      />
-      <EmptyPlaceholder>
-        <EmptyPlaceholder.Icon name="post" />
-        <EmptyPlaceholder.Title>No content created</EmptyPlaceholder.Title>
-        <EmptyPlaceholder.Description>
-          You don&apos;t have any content yet. Start creating content.
-        </EmptyPlaceholder.Description>
-        <Button>Add Content</Button>
-      </EmptyPlaceholder>
-    </>
+    <div className="flex flex-col justify-center gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <JDInput value={jd} onChange={setJd} />
+        <ResumeInput setResults={setResults} jd={jd} />
+      </div>
+
+      <div
+        className={cn("flex flex-col gap-4", {
+          "flex-1": Object.keys(results).length > 0,
+        })}
+      >
+        {Object.entries(results).map(([key, result]) => {
+          return <ResumeOverview key={key} name={key} result={result} />;
+        })}
+      </div>
+    </div>
   );
 }
