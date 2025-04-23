@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NavItem, SidebarNavItem } from "@/types";
+import { SidebarNavItem } from "@/types";
 import { Menu, PanelLeftClose, PanelRightClose } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
@@ -22,6 +22,8 @@ import {
 import ProjectSwitcher from "@/components/dashboard/project-switcher";
 import { UpgradeCard } from "@/components/dashboard/upgrade-card";
 import { Icons } from "@/components/shared/icons";
+
+import JDSwitcherClient from "../dashboard/jd-switcher";
 
 interface DashboardSidebarProps {
   links: SidebarNavItem[];
@@ -71,8 +73,8 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
             )}
           >
             <div className="flex h-full max-h-screen flex-1 flex-col gap-2">
-              <div className="flex h-14 items-center p-4 lg:h-[60px]">
-                {isSidebarExpanded ? <ProjectSwitcher /> : null}
+              <div className="flex h-14 items-center space-x-2 p-4 lg:h-[60px]">
+                {isSidebarExpanded ? <JDSwitcherClient /> : null}
 
                 <Button
                   variant="ghost"

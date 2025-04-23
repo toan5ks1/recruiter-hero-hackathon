@@ -1,3 +1,5 @@
+import { CV } from "@prisma/client";
+
 import { ScoreResult } from "@/lib/schemas";
 
 export interface TextItem {
@@ -23,9 +25,8 @@ export type TextScores = TextScore[];
 
 export type ScoreResultStatus = "idle" | "processing" | "success" | "error";
 
-export interface ScoreResultExtended {
-  status: ScoreResultStatus;
-  data?: ScoreResult;
+export interface ScoreResultExtended extends CV {
+  status: string | null;
 }
 
 export interface ResultsList {

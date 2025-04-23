@@ -1,10 +1,70 @@
-import { resumeScoreSchema } from "@/lib/schemas";
-import { deepseek } from "@ai-sdk/deepseek";
-import { generateObject } from "ai";
-import { NextResponse } from "next/server";
+"use server";
 
-export async function POST(req: Request) {
-  const { jd, cv, fileName } = await req.json();
+import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
+import { deepseek } from "@ai-sdk/deepseek";
+import { JsonObject } from "@prisma/client/runtime/library";
+import { generateObject } from "ai";
+
+import { resumeScoreSchema } from "@/lib/schemas";
+
+import { prisma } from "./db";
+
+export async function createCV({
+  jdId,
+  fileName,
+  content,
+}: {
+  jdId: string;
+  fileName: string;
+  content: string;
+}) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Not authenticated");
+  }
+
+  const createdCV = await prisma.cV.create({
+    data: {
+      jobDescriptionId: jdId,
+      fileName: fileName,
+      content: content,
+      resume: {},
+      score: {},
+    },
+  });
+
+  revalidatePath(`/dashboard/${jdId}`);
+
+  return createdCV;
+}
+
+export async function scoreCV({
+  cvId,
+  jdId,
+  jdContent,
+  cvContent,
+}: {
+  cvId: string;
+  jdId: string;
+  cvContent: string;
+  jdContent: string;
+}) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Not authenticated");
+  }
+
+  await prisma.cV.update({
+    where: { id: cvId },
+    data: {
+      status: "processing",
+    },
+  });
+
+  revalidatePath(`/dashboard/${jdId}`);
 
   const result = await generateObject({
     model: deepseek("deepseek-chat"),
@@ -41,7 +101,7 @@ export async function POST(req: Request) {
    - Special certifications mentioned in JD
 
 4. Languages (10% weight):
-   - Only if specified in JD
+   - If the JD specifies required languages, evaluate the candidate accordingly. If not specified, assess the candidate’s language proficiency based on the language used in their CV
 
 ### Output Requirements:
 - education, workExperience, projects, certifications must be arrays 
@@ -56,11 +116,11 @@ Provide your evaluation in the exact specified format without deviation.`,
       {
         role: "user",
         content: [
-          { type: "text", text: `JOB DESCRIPTION:\n ${jd}` },
+          { type: "text", text: `JOB DESCRIPTION:\n ${jdContent}` },
           {
             type: "text",
             text: `
-CANDIDATE RESUME:\n${cv}`,
+CANDIDATE RESUME:\n${cvContent}`,
           },
         ],
       },
@@ -68,5 +128,13 @@ CANDIDATE RESUME:\n${cv}`,
     schema: resumeScoreSchema,
   });
 
-  return NextResponse.json({ fileName, data: result.object });
+  await prisma.cV.update({
+    where: { id: cvId },
+    data: {
+      resume: result.object.resume as JsonObject,
+      score: result.object.score as JsonObject,
+      totalScore: result.object.score.totalScore,
+      status: "success",
+    },
+  });
 }

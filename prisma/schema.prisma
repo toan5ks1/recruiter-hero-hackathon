@@ -66,6 +66,7 @@ model User {
   stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
   stripePriceId          String?   @map(name: "stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+  jobDescriptions        JobDescription[]
 
   @@map(name: "users")
 }
@@ -77,4 +78,36 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map(name: "verification_tokens")
+}
+
+model JobDescription {
+  id        String @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  cvs       CV[]
+
+  @@map(name: "job_descriptions")
+}
+
+model CV {
+  id               String   @id @default(cuid())
+  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id])
+  jobDescriptionId String
+  fileName         String
+  content          String
+  fileUrl          String?
+  resume           Json 
+  score            Json
+
+  totalScore       Float?
+  status           String @default("created")
+
+  uploadedAt       DateTime @default(now())
+  shortlisted      Boolean @default(false)
+  reviewerNote     String?
+
+  @@map(name: "cvs")
 }

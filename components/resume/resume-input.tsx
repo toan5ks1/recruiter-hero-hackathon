@@ -1,53 +1,32 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { experimental_useObject as useObject } from "ai/react";
+"use client";
+
+import React, { useState } from "react";
+import { JobDescription } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { FileUp, Loader2, Plus } from "lucide-react";
+import { FileUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { createCV, scoreCV } from "@/lib/cv";
 import { readPdf } from "@/lib/parse-resume-from-pdf/read-pdf";
-import { resumeScoreResultSchema } from "@/lib/schemas";
-import { ResultsList, ScoreResultStatus } from "@/lib/types";
 import { textItemsToText } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Link } from "@/components/ui/link";
 
 interface ResumeInputProps {
-  jd: string;
-  setResults: Dispatch<SetStateAction<ResultsList>>;
+  jd: JobDescription;
 }
 
-export const ResumeInput = ({ jd, setResults }: ResumeInputProps) => {
+export const ResumeInput = ({ jd }: ResumeInputProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-
-  const { submit, isLoading } = useObject({
-    api: "/api/score-cv",
-    schema: resumeScoreResultSchema,
-    initialValue: undefined,
-    onFinish: ({ object }) => {
-      if (object) {
-        const { fileName, data } = object;
-        setResults((pre) => ({
-          ...pre,
-          [fileName]: {
-            status: "success",
-            data,
-          },
-        }));
-      }
-    },
-    onError: (error) => {
-      toast.error("Failed to score CV. Please try again.");
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -73,33 +52,30 @@ export const ResumeInput = ({ jd, setResults }: ResumeInputProps) => {
 
   const handleSubmitWithFiles = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const allFiles = {} as ResultsList;
-    files.forEach((file) => {
-      allFiles[file.name] = {
-        status: "idle" as ScoreResultStatus,
-      };
-    });
-
-    setResults(allFiles);
+    setIsLoading(true);
 
     files.forEach(async (file) => {
       const dataUrl = URL.createObjectURL(file);
       const textItems = await readPdf(dataUrl);
       const rawText = textItemsToText(textItems);
 
-      setResults((pre) => ({
-        ...pre,
-        [file.name]: {
-          status: "processing",
-        },
-      }));
-      submit({ fileName: file.name, jd, cv: rawText });
-    });
-  };
+      const createdCV = await createCV({
+        jdId: jd.id,
+        fileName: file.name,
+        content: rawText,
+      });
+      setFiles([]);
+      setIsLoading(false);
 
-  const clearPDF = () => {
-    setFiles([]);
+      if (createdCV) {
+        scoreCV({
+          jdId: jd.id,
+          cvId: createdCV.id,
+          jdContent: jd.content,
+          cvContent: createdCV.content,
+        });
+      }
+    });
   };
 
   return (
@@ -115,7 +91,6 @@ export const ResumeInput = ({ jd, setResults }: ResumeInputProps) => {
       onDrop={(e) => {
         e.preventDefault();
         setIsDragging(false);
-        console.log(e.dataTransfer.files);
         handleFileChange({
           target: { files: e.dataTransfer.files },
         } as React.ChangeEvent<HTMLInputElement>);
@@ -138,15 +113,6 @@ export const ResumeInput = ({ jd, setResults }: ResumeInputProps) => {
       </AnimatePresence>
       <Card className="size-full border-0 sm:h-fit sm:border">
         <CardHeader className="space-y-6 text-center">
-          {/* <div className="mx-auto flex items-center justify-center space-x-2 text-muted-foreground">
-            <div className="rounded-full bg-primary/10 p-2">
-              <FileUp className="size-6" />
-            </div>
-            <Plus className="size-4" />
-            <div className="rounded-full bg-primary/10 p-2">
-              <Loader2 className="size-6" />
-            </div>
-          </div> */}
           <div className="space-y-2">
             <CardTitle className="text-2xl font-bold">
               PDF Resume Parser

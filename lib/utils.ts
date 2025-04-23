@@ -213,7 +213,7 @@ export const textItemsToText = (
   return lines.join("\n");
 };
 
-export function capitalizeFirstLetter(str: string): string {
-  if (!str) return "";
+export function capitalizeFirstLetter(str: string | null): string {
+  if (!str) return "Undefined";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
