@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { useJDStore } from "@/stores/jd-store";
 import { JobDescription } from "@prisma/client";
+import { JsonValue } from "@prisma/client/runtime/library";
 import { AnimatePresence, motion } from "framer-motion";
 import { FileUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -27,6 +29,7 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { addCVToJD, updateCV } = useJDStore();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -68,12 +71,23 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
       setIsLoading(false);
 
       if (createdCV) {
+        addCVToJD(createdCV, "processing");
         scoreCV({
-          jdId: jd.id,
           cvId: createdCV.id,
           jdContent: jd.content,
           cvContent: createdCV.content,
-        });
+        })
+          .then(({ resume, score }) => {
+            updateCV({
+              ...createdCV,
+              resume: resume as JsonValue,
+              score: score as JsonValue,
+              status: "success",
+            });
+          })
+          .catch(() => {
+            updateCV({ ...createdCV, status: "failed" });
+          });
       }
     });
   };

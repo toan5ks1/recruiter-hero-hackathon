@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
-import { JobDescription } from "@prisma/client";
+import React, { useEffect, useState } from "react";
+import { useJDStore } from "@/stores/jd-store";
 import { toast } from "sonner";
 
 import { updateJD } from "@/lib/jd";
+import { JDExtended } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,13 +17,18 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 type JDInputProps = {
-  jd: JobDescription;
+  jd: JDExtended;
 };
 
 export const JDInput: React.FC<JDInputProps> = ({ jd }) => {
+  const { setSelectedJD } = useJDStore();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [jdContent, setJdContent] = useState(jd.content);
+
+  useEffect(() => {
+    setSelectedJD(jd);
+  }, [jd, setSelectedJD]);
 
   const handleToggleEdit = () => {
     if (isEditMode) {

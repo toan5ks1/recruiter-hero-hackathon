@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import { CV } from "@prisma/client";
 import { JsonObject } from "@prisma/client/runtime/library";
-import { Bold, Italic, ScanText, Target } from "lucide-react";
+import { ScanText, Target } from "lucide-react";
 
-import { ScoreResultExtended } from "@/lib/types";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import { ResumeScore } from "@/components/resume/resume-score";
 import { ResumePreview } from "@/components/resume/resume-view";
 
 interface ResumeOverviewProps {
-  cv: ScoreResultExtended;
+  cv: CV;
 }
 
 const ResumeOverview = ({ cv }: ResumeOverviewProps) => {

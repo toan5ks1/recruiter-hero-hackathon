@@ -30,24 +30,21 @@ export async function createCV({
       jobDescriptionId: jdId,
       fileName: fileName,
       content: content,
+      status: "created",
       resume: {},
       score: {},
     },
   });
-
-  revalidatePath(`/dashboard/${jdId}`);
 
   return createdCV;
 }
 
 export async function scoreCV({
   cvId,
-  jdId,
   jdContent,
   cvContent,
 }: {
   cvId: string;
-  jdId: string;
   cvContent: string;
   jdContent: string;
 }) {
@@ -63,8 +60,6 @@ export async function scoreCV({
       status: "processing",
     },
   });
-
-  revalidatePath(`/dashboard/${jdId}`);
 
   const result = await generateObject({
     model: deepseek("deepseek-chat"),
@@ -137,4 +132,6 @@ CANDIDATE RESUME:\n${cvContent}`,
       status: "success",
     },
   });
+
+  return result.object;
 }

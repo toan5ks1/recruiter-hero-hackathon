@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useJDStore } from "@/stores/jd-store";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 
 import { getAllJD } from "@/lib/jd";
@@ -22,21 +22,19 @@ type JDType = {
 };
 
 export default function JDSwitcherClient() {
+  const { selectedJD } = useJDStore();
   const [open, setOpen] = useState(false);
   const [jds, setJds] = useState<JDType[]>([]);
-  const [selected, setSelected] = useState<JDType | undefined>(undefined);
   const [loading, setLoading] = useState(true);
-  const pathname = usePathname();
   const { setShowCreateJDModal, CreateJDModal } = useCreateJDModal();
 
   useEffect(() => {
     getAllJD()
       .then((data) => {
         setJds(data);
-        setSelected(data.find((jd) => jd?.id === pathname.split("/").pop()));
       })
       .finally(() => setLoading(false));
-  }, [pathname]);
+  }, []);
 
   if (loading) return <JDSwitcherPlaceholder />;
 
@@ -65,7 +63,7 @@ export default function JDSwitcherClient() {
           onClick={() => setOpen(!open)}
         >
           <span className="w-full truncate text-left text-sm font-medium">
-            {selected?.title}
+            {selectedJD?.title}
           </span>
           <ChevronsUpDown className="ml-2 size-4 text-muted-foreground" />
         </Button>
@@ -83,7 +81,7 @@ export default function JDSwitcherClient() {
               onClick={() => setOpen(false)}
             >
               <span className="flex-1 truncate">{jd.title}</span>
-              {selected?.id === jd.id && (
+              {selectedJD?.id === jd.id && (
                 <Check className="absolute right-3 size-4 text-foreground" />
               )}
             </Link>

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getJDById } from "@/lib/jd";
 import { JDInput } from "@/components/jd/jd-input";
 import { ResumeInput } from "@/components/resume/resume-input";
-import ResumeOverview from "@/components/resume/resume-overview";
+import ResumeList from "@/components/resume/resume-list";
 
 export default async function DashboardPage(props: {
   params: Promise<{ id: string }>;
@@ -23,11 +23,7 @@ export default async function DashboardPage(props: {
         <ResumeInput jd={jd} />
       </div>
 
-      <div className={"flex flex-col gap-4"}>
-        {jd.cvs.map((cv) => {
-          return <ResumeOverview key={cv.id} cv={cv} />;
-        })}
-      </div>
+      <ResumeList />
     </div>
   );
 }

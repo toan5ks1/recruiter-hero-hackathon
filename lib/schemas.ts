@@ -6,12 +6,12 @@ export const questionSchema = z.object({
     .array(z.string())
     .length(4)
     .describe(
-      "Four possible answers to the question. Only one should be correct. They should all be of equal lengths."
+      "Four possible answers to the question. Only one should be correct. They should all be of equal lengths.",
     ),
   answer: z
     .enum(["A", "B", "C", "D"])
     .describe(
-      "The correct answer, where A is the first option, B is the second, and so on."
+      "The correct answer, where A is the first option, B is the second, and so on.",
     ),
 });
 
@@ -34,7 +34,7 @@ export const resumeSchema = z.object({
           endDate: nullableString,
           description: nullableString,
         })
-        .optional()
+        .optional(),
     )
     .optional()
     .nullable(),
@@ -48,7 +48,7 @@ export const resumeSchema = z.object({
           endDate: nullableString, // <-- allow null
           description: nullableString, // <-- allow null
         })
-        .optional()
+        .optional(),
     )
     .optional()
     .nullable(),
@@ -60,7 +60,7 @@ export const resumeSchema = z.object({
           description: nullableString,
           technologies: nullableString,
         })
-        .optional()
+        .optional(),
     )
     .optional()
     .nullable(),
@@ -72,7 +72,7 @@ export const resumeSchema = z.object({
           issuer: nullableString,
           date: nullableString,
         })
-        .optional()
+        .optional(),
     )
     .optional()
     .nullable(),
@@ -114,4 +114,3 @@ export const resumeScoreResultSchema = z.object({
   fileName: z.string(),
   data: resumeScoreSchema,
 });
-export type ScoreResult = z.infer<typeof resumeScoreSchema>;

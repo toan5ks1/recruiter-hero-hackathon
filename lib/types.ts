@@ -1,6 +1,4 @@
-import { CV } from "@prisma/client";
-
-import { ScoreResult } from "@/lib/schemas";
+import { CV, JobDescription } from "@prisma/client";
 
 export interface TextItem {
   text: string;
@@ -23,12 +21,6 @@ export interface TextScore {
 }
 export type TextScores = TextScore[];
 
-export type ScoreResultStatus = "idle" | "processing" | "success" | "error";
-
-export interface ScoreResultExtended extends CV {
-  status: string | null;
-}
-
-export interface ResultsList {
-  [key: string]: ScoreResultExtended;
+export interface JDExtended extends JobDescription {
+  cvs: CV[];
 }
