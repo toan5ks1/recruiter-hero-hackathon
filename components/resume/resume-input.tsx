@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FileUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { createCVs, scoreCV } from "@/lib/cv";
+import { createCVs, revalidateCV } from "@/lib/cv";
 import { readPdf } from "@/lib/parse-resume-from-pdf/read-pdf";
 import { textItemsToText } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -83,18 +83,24 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
     setIsLoading(false);
 
     if (createdCVs) {
-      setTimeout(() => {
-        createdCVs.forEach((createdCV) =>
-          scoreCV({
+      createdCVs.forEach((createdCV) =>
+        fetch("/api/cv/score", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             jdId: jd.id,
             jdContent: jd.content,
             cvId: createdCV.id,
             cvContent: createdCV.content,
-          }).catch((err) => {
+          }),
+        })
+          .then(() => revalidateCV(jd.id))
+          .catch((err) => {
             console.error("ScoreCV failed:", err);
           }),
-        );
-      }, 1000);
+      );
     }
   };
 
