@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useJDStore } from "@/stores/jd-store";
+import { usePathname } from "next/navigation";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 
 import { getAllJD } from "@/lib/jd";
@@ -22,7 +22,8 @@ type JDType = {
 };
 
 export default function JDSwitcherClient() {
-  const { selectedJD } = useJDStore();
+  const pathname = usePathname();
+  const [selectedJD, setSelectedJD] = useState<JDType | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [jds, setJds] = useState<JDType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +33,10 @@ export default function JDSwitcherClient() {
     getAllJD()
       .then((data) => {
         setJds(data);
+        setSelectedJD(data.find((jd) => jd?.id === pathname.split("/").pop()));
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [pathname]);
 
   if (loading) return <JDSwitcherPlaceholder />;
 
@@ -59,13 +61,13 @@ export default function JDSwitcherClient() {
       <PopoverTrigger asChild>
         <Button
           variant={open ? "secondary" : "outline"}
-          className="flex h-8 w-full justify-between px-2"
+          className="flex h-8 w-full max-w-[80%] justify-between px-2"
           onClick={() => setOpen(!open)}
         >
-          <span className="w-full truncate text-left text-sm font-medium">
+          <span className="truncate text-left text-sm font-medium">
             {selectedJD?.title}
           </span>
-          <ChevronsUpDown className="ml-2 size-4 text-muted-foreground" />
+          <ChevronsUpDown className="ml-2 size-3.5 min-w-3.5 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="max-w-60 p-2">
@@ -91,7 +93,7 @@ export default function JDSwitcherClient() {
             className="relative flex h-9 items-center justify-center gap-2 p-2"
             onClick={() => setShowCreateJDModal(true)}
           >
-            <Plus size={18} className="absolute left-2.5 top-2" />
+            <Plus className="size-4" />
             <span className="flex-1 truncate text-center">New JD</span>
           </Button>
         </div>

@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useJDStore } from "@/stores/jd-store";
+import React, { useState } from "react";
+import { JobDescription } from "@prisma/client";
 import { toast } from "sonner";
 
 import { updateJD } from "@/lib/jd";
-import { JDExtended } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,18 +16,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 type JDInputProps = {
-  jd: JDExtended;
+  jd: JobDescription;
 };
 
 export const JDInput: React.FC<JDInputProps> = ({ jd }) => {
-  const { setSelectedJD } = useJDStore();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [jdContent, setJdContent] = useState(jd.content);
-
-  useEffect(() => {
-    setSelectedJD(jd);
-  }, [jd, setSelectedJD]);
 
   const handleToggleEdit = () => {
     if (isEditMode) {
@@ -36,7 +30,6 @@ export const JDInput: React.FC<JDInputProps> = ({ jd }) => {
       toast.promise(
         updateJD(jd.id, { ...jd, content: jdContent }).finally(() => {
           setIsUpdating(false);
-          setJdContent(jdContent);
         }),
         {
           loading: "Updating job description...",
@@ -60,7 +53,7 @@ export const JDInput: React.FC<JDInputProps> = ({ jd }) => {
     <Card className="flex size-full flex-col border-0 sm:border">
       <CardHeader className="space-y-6 text-center">
         <div className="space-y-2">
-          <CardTitle className="text-2xl font-bold">Job Description</CardTitle>
+          <CardTitle className="text-2xl font-bold">{jd.title}</CardTitle>
           <CardDescription className="text-base">
             Upload a PDF or input job description
           </CardDescription>

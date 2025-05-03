@@ -23,7 +23,7 @@ export default async function DashboardPage(props: {
         <ResumeInput jd={jd} />
       </div>
 
-      <ResumeList />
+      <ResumeList jd={jd} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { auth } from "@/auth";
 import { deepseek } from "@ai-sdk/deepseek";
 import { JsonObject } from "@prisma/client/runtime/library";
@@ -30,20 +30,61 @@ export async function createCV({
       jobDescriptionId: jdId,
       fileName: fileName,
       content: content,
-      status: "created",
+      status: "processing",
       resume: {},
       score: {},
     },
   });
 
+  revalidateTag(`cvs-${jdId}`);
+
   return createdCV;
 }
 
+export async function createCVs({
+  jdId,
+  cvs,
+}: {
+  jdId: string;
+  cvs: { fileName: string; content: string }[];
+}) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    throw new Error("Not authenticated");
+  }
+
+  if (cvs.length === 0) {
+    return [];
+  }
+
+  const createdCVs = await Promise.all(
+    cvs.map((cv) =>
+      prisma.cV.create({
+        data: {
+          jobDescriptionId: jdId,
+          fileName: cv.fileName,
+          content: cv.content,
+          status: "processing",
+          resume: {},
+          score: {},
+        },
+      }),
+    ),
+  );
+
+  revalidateTag(`cvs-${jdId}`);
+
+  return createdCVs; // includes id, content, etc.
+}
+
 export async function scoreCV({
+  jdId,
   cvId,
   jdContent,
   cvContent,
 }: {
+  jdId: string;
   cvId: string;
   cvContent: string;
   jdContent: string;
@@ -53,13 +94,6 @@ export async function scoreCV({
   if (!session?.user?.id) {
     throw new Error("Not authenticated");
   }
-
-  await prisma.cV.update({
-    where: { id: cvId },
-    data: {
-      status: "processing",
-    },
-  });
 
   const result = await generateObject({
     model: deepseek("deepseek-chat"),
@@ -132,6 +166,8 @@ CANDIDATE RESUME:\n${cvContent}`,
       status: "success",
     },
   });
+
+  revalidateTag(`cvs-${jdId}`);
 
   return result.object;
 }

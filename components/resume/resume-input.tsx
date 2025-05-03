@@ -1,14 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { useJDStore } from "@/stores/jd-store";
 import { JobDescription } from "@prisma/client";
-import { JsonValue } from "@prisma/client/runtime/library";
 import { AnimatePresence, motion } from "framer-motion";
 import { FileUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { createCV, scoreCV } from "@/lib/cv";
+import { createCVs, scoreCV } from "@/lib/cv";
 import { readPdf } from "@/lib/parse-resume-from-pdf/read-pdf";
 import { textItemsToText } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,7 +27,6 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { addCVToJD, updateCV } = useJDStore();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -57,39 +54,48 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
     e.preventDefault();
     setIsLoading(true);
 
-    files.forEach(async (file) => {
-      const dataUrl = URL.createObjectURL(file);
-      const textItems = await readPdf(dataUrl);
-      const rawText = textItemsToText(textItems);
+    const rawTextItems = await Promise.all(
+      files.map(async (file) => {
+        const dataUrl = URL.createObjectURL(file);
+        try {
+          const textItems = await readPdf(dataUrl);
+          return {
+            fileName: file.name,
+            content: textItemsToText(textItems),
+          };
+        } finally {
+          URL.revokeObjectURL(dataUrl);
+        }
+      }),
+    );
 
-      const createdCV = await createCV({
-        jdId: jd.id,
-        fileName: file.name,
-        content: rawText,
-      });
-      setFiles([]);
-      setIsLoading(false);
+    const createCVParams = rawTextItems.map(({ fileName, content }) => ({
+      fileName,
+      content,
+    }));
 
-      if (createdCV) {
-        addCVToJD(createdCV, "processing");
-        scoreCV({
-          cvId: createdCV.id,
-          jdContent: jd.content,
-          cvContent: createdCV.content,
-        })
-          .then(({ resume, score }) => {
-            updateCV({
-              ...createdCV,
-              resume: resume as JsonValue,
-              score: score as JsonValue,
-              status: "success",
-            });
-          })
-          .catch(() => {
-            updateCV({ ...createdCV, status: "failed" });
-          });
-      }
+    const createdCVs = await createCVs({
+      jdId: jd.id,
+      cvs: createCVParams,
     });
+
+    setFiles([]);
+    setIsLoading(false);
+
+    if (createdCVs) {
+      setTimeout(() => {
+        createdCVs.forEach((createdCV) =>
+          scoreCV({
+            jdId: jd.id,
+            jdContent: jd.content,
+            cvId: createdCV.id,
+            cvContent: createdCV.content,
+          }).catch((err) => {
+            console.error("ScoreCV failed:", err);
+          }),
+        );
+      }, 1000);
+    }
   };
 
   return (

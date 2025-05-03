@@ -73,13 +73,13 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
             )}
           >
             <div className="flex h-full max-h-screen flex-1 flex-col gap-2">
-              <div className="flex h-14 items-center space-x-2 p-4 lg:h-[60px]">
+              <div className="flex h-14 items-center justify-between space-x-2 p-4 lg:h-[60px]">
                 {isSidebarExpanded ? <JDSwitcherClient /> : null}
 
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="ml-auto size-9 lg:size-8"
+                  className="size-9 lg:size-8"
                   onClick={toggleSidebar}
                 >
                   {isSidebarExpanded ? (

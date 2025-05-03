@@ -25,7 +25,6 @@ export const getJDById = async (id: string) => {
   try {
     const jd = await prisma.jobDescription.findUnique({
       where: { id },
-      include: { cvs: true },
     });
 
     return jd;
