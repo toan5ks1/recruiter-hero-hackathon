@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const ResumeScore = ({ score }: { score: Score }) => {
   return (
-    <Card className="rounded-2xl shadow-md">
+    <Card>
       <Accordion
         collapsible
         type="single"
@@ -20,8 +20,8 @@ export const ResumeScore = ({ score }: { score: Score }) => {
         defaultValue="score"
       >
         <AccordionItem value="score" className="border-b-0">
-          <AccordionTrigger>
-            <CardTitle className="px-4">Score Result</CardTitle>
+          <AccordionTrigger className="px-4">
+            <CardTitle>Score Result</CardTitle>
           </AccordionTrigger>
           <AccordionContent>
             {/* Score Section */}

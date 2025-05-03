@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Resume } from "@/lib/schemas";
 import {
   Accordion,
@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 type Props = { title?: string; resume: Resume };
@@ -16,7 +17,7 @@ export const ResumePreview: React.FC<Props> = ({ resume, title }) => {
   if (!resume) return null;
 
   return (
-    <Card className="rounded-2xl shadow-md">
+    <Card>
       <Accordion
         collapsible
         type="single"
@@ -24,8 +25,8 @@ export const ResumePreview: React.FC<Props> = ({ resume, title }) => {
         defaultValue="resume"
       >
         <AccordionItem value="resume" className="border-b-0">
-          <AccordionTrigger>
-            <CardTitle className="px-4">Parsed Resume</CardTitle>
+          <AccordionTrigger className="px-4">
+            <CardTitle>Parsed Resume</CardTitle>
           </AccordionTrigger>
           <AccordionContent>
             <CardContent>
@@ -40,7 +41,7 @@ export const ResumePreview: React.FC<Props> = ({ resume, title }) => {
                     {resume.skills?.length ? (
                       <div className="flex flex-wrap gap-2">
                         {resume.skills.map((skill, i) =>
-                          skill ? <Badge key={i}>{skill}</Badge> : null
+                          skill ? <Badge key={i}>{skill}</Badge> : null,
                         )}
                       </div>
                     ) : (
@@ -125,7 +126,7 @@ export const ResumePreview: React.FC<Props> = ({ resume, title }) => {
                     {resume.languages?.length ? (
                       <div className="flex flex-wrap gap-2">
                         {resume.languages.map((lang, i) =>
-                          lang ? <Badge key={i}>{lang}</Badge> : null
+                          lang ? <Badge key={i}>{lang}</Badge> : null,
                         )}
                       </div>
                     ) : (
