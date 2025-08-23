@@ -109,5 +109,34 @@ model CV {
   shortlisted      Boolean @default(false)
   reviewerNote     String?
 
+  // Interview system fields
+  interviewStage      String?
+  interviewScheduledAt DateTime?
+  interviewNotes      String?
+  interviewQuestions  Json?
+  interviewFeedback   Json?
+
+  interviewRounds InterviewRound[]
+
   @@map(name: "cvs")
+}
+
+model InterviewRound {
+  id              String    @id @default(cuid())
+  cv              CV        @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId            String
+  roundType       String    // phone, technical, panel, final
+  scheduledAt     DateTime?
+  durationMinutes Int       @default(60)
+  interviewerEmail String?
+  interviewerName String?
+  status          String    @default("scheduled") // scheduled, completed, cancelled, rescheduled
+  questions       Json?
+  feedback        Json?
+  rating          Int?      // 1-5 rating
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map(name: "interview_rounds")
 }

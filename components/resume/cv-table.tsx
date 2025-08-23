@@ -4,12 +4,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { JobDescription } from "@prisma/client";
 import {
   Ban,
+  Calendar,
   CheckCircle,
+  Clock,
   Eye,
   MessageSquare,
   MoreHorizontal,
+  ScanText,
   Star,
   StarOff,
+  Target,
   XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -41,6 +45,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScheduleInterviewModal } from "@/components/interview/schedule-interview-modal";
 import { ResumeScore } from "@/components/resume/resume-score";
 import { ResumePreview } from "@/components/resume/resume-view";
 
@@ -68,6 +73,8 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
   const [loading, setLoading] = useState(true);
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
   const [activeTab, setActiveTab] = useState<string>("score");
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [schedulingCvId, setSchedulingCvId] = useState<string | null>(null);
 
   const fetchCVs = useCallback(async () => {
     try {
@@ -164,6 +171,20 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
             Completed
           </Badge>
         );
+      case "interview_scheduled":
+        return (
+          <Badge className="border-orange-200 bg-orange-100 text-orange-800">
+            <Calendar className="mr-1 h-3 w-3" />
+            Interview Scheduled
+          </Badge>
+        );
+      case "interview_completed":
+        return (
+          <Badge className="border-purple-200 bg-purple-100 text-purple-800">
+            <Clock className="mr-1 h-3 w-3" />
+            Interview Done
+          </Badge>
+        );
       case "qualified":
         return (
           <Badge className="border-green-200 bg-green-100 text-green-800">
@@ -226,6 +247,17 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
     } else if (cv.resume) {
       setActiveTab("resume");
     }
+  };
+
+  const openScheduleModal = (cvId: string) => {
+    setSchedulingCvId(cvId);
+    setScheduleModalOpen(true);
+  };
+
+  const handleInterviewScheduled = () => {
+    fetchCVs(); // Refresh the list
+    setScheduleModalOpen(false);
+    setSchedulingCvId(null);
   };
 
   if (loading) {
@@ -321,6 +353,16 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                           ? "Remove from Shortlist"
                           : "Add to Shortlist"}
                       </DropdownMenuItem>
+                      {cv.shortlisted &&
+                        cv.status !== "interview_scheduled" &&
+                        cv.status !== "interview_completed" && (
+                          <DropdownMenuItem
+                            onClick={() => openScheduleModal(cv.id)}
+                          >
+                            <Calendar className="mr-2 h-4 w-4" />
+                            Schedule Interview
+                          </DropdownMenuItem>
+                        )}
                       {cv.status === "success" && (
                         <>
                           <DropdownMenuItem
@@ -407,6 +449,21 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
             </Tabs>
           </DialogContent>
         </Dialog>
+      )}
+
+      {schedulingCvId && (
+        <ScheduleInterviewModal
+          cvId={schedulingCvId}
+          candidateName={
+            cvs.find((cv) => cv.id === schedulingCvId)?.fileName || "Candidate"
+          }
+          isOpen={scheduleModalOpen}
+          onClose={() => {
+            setScheduleModalOpen(false);
+            setSchedulingCvId(null);
+          }}
+          onScheduled={handleInterviewScheduled}
+        />
       )}
     </>
   );
