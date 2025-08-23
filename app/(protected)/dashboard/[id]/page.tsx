@@ -1,29 +1,67 @@
+"use client";
+
+import React from "react";
 import { notFound } from "next/navigation";
+import { JobDescription } from "@prisma/client";
 
 import { getJDById } from "@/lib/jd";
-import { JDInput } from "@/components/jd/jd-input";
-import { ResumeInput } from "@/components/resume/resume-input";
-import ResumeList from "@/components/resume/resume-list";
+import { JDSummary } from "@/components/jd/jd-summary";
+import { CVTable } from "@/components/resume/cv-table";
 
-export default async function DashboardPage(props: {
+interface DashboardPageProps {
   params: Promise<{ id: string }>;
-}) {
-  const params = await props.params;
-  const { id } = params;
-  const jd = await getJDById(id);
+}
+
+export default function DashboardPage({ params }: DashboardPageProps) {
+  const [jd, setJd] = React.useState<JobDescription | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const loadJD = async () => {
+      try {
+        const { id } = await params;
+        const jdData = await getJDById(id);
+        if (!jdData) {
+          notFound();
+        }
+        setJd(jdData);
+      } catch (error) {
+        console.error("Failed to load JD:", error);
+        notFound();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadJD();
+  }, [params]);
+
+  const handleJDUpdate = (updatedJD: JobDescription) => {
+    setJd(updatedJD);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+          <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!jd) {
-    notFound();
+    return null;
   }
 
   return (
-    <div className="flex flex-col justify-center gap-4">
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <JDInput jd={jd} />
-        <ResumeInput jd={jd} />
-      </div>
+    <div className="flex flex-col gap-6">
+      {/* Job Description Summary */}
+      <JDSummary jd={jd} onUpdate={handleJDUpdate} />
 
-      <ResumeList jd={jd} />
+      {/* Resume Results Table */}
+      <CVTable jd={jd} />
     </div>
   );
 }

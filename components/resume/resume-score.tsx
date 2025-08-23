@@ -2,92 +2,103 @@ import React from "react";
 import { Separator } from "@radix-ui/react-separator";
 
 import { Score } from "@/lib/schemas";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const ResumeScore = ({ score }: { score: Score }) => {
   return (
-    <Card>
-      <Accordion
-        collapsible
-        type="single"
-        className="w-full"
-        defaultValue="score"
-      >
-        <AccordionItem value="score" className="border-b-0">
-          <AccordionTrigger className="px-4">
-            <CardTitle>Score Result</CardTitle>
-          </AccordionTrigger>
-          <AccordionContent>
-            {/* Score Section */}
-            <CardContent className="space-y-2">
-              <div>
-                <strong>Total Score:</strong> {score.totalScore} / 100
+    <Card className="border-none">
+      <CardHeader>
+        <CardTitle>Score Analysis</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Score Section */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border p-3">
+            <div className="text-sm font-medium text-muted-foreground">
+              Total Score
+            </div>
+            <div className="text-2xl font-bold">{score.totalScore} / 100</div>
+          </div>
+          {score.skillScore !== undefined && (
+            <div className="rounded-lg border p-3">
+              <div className="text-sm font-medium text-muted-foreground">
+                Skills
               </div>
-              {score.skillScore !== undefined && (
-                <div>
-                  <strong>Skill:</strong> {score.skillScore}
-                </div>
-              )}
-              {score.experienceScore !== undefined && (
-                <div>
-                  <strong>Experience:</strong> {score.experienceScore}
-                </div>
-              )}
-              {score.educationScore !== undefined && (
-                <div>
-                  <strong>Education:</strong> {score.educationScore}
-                </div>
-              )}
-              {score.languageScore !== undefined && (
-                <div>
-                  <strong>Language:</strong> {score.languageScore}
-                </div>
-              )}
-              {score.reasoning && (
-                <>
-                  <Separator />
-                  <div>
-                    <strong>Reasoning:</strong>
-                    <p>{score.reasoning}</p>
-                  </div>
-                </>
-              )}
-              {score.strengths?.length ? (
-                <div>
-                  <strong>Strengths:</strong>
-                  <ul className="list-inside list-disc text-green-500">
-                    {score.strengths.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-              {score.weaknesses?.length ? (
-                <div>
-                  <strong>Weaknesses:</strong>
-                  <ul className="list-inside list-disc text-red-500">
-                    {score.weaknesses.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-              {score.notes && (
-                <div>
-                  <strong>Notes:</strong>
-                  <p>{score.notes}</p>
-                </div>
-              )}
-            </CardContent>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+              <div className="text-xl font-semibold">{score.skillScore}</div>
+            </div>
+          )}
+          {score.experienceScore !== undefined && (
+            <div className="rounded-lg border p-3">
+              <div className="text-sm font-medium text-muted-foreground">
+                Experience
+              </div>
+              <div className="text-xl font-semibold">
+                {score.experienceScore}
+              </div>
+            </div>
+          )}
+          {score.educationScore !== undefined && (
+            <div className="rounded-lg border p-3">
+              <div className="text-sm font-medium text-muted-foreground">
+                Education
+              </div>
+              <div className="text-xl font-semibold">
+                {score.educationScore}
+              </div>
+            </div>
+          )}
+          {score.languageScore !== undefined && (
+            <div className="rounded-lg border p-3">
+              <div className="text-sm font-medium text-muted-foreground">
+                Languages
+              </div>
+              <div className="text-xl font-semibold">{score.languageScore}</div>
+            </div>
+          )}
+        </div>
+
+        {score.reasoning && (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Reasoning</h3>
+            <p className="text-sm leading-relaxed">{score.reasoning}</p>
+          </div>
+        )}
+
+        {score.strengths?.length ? (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-green-700">Strengths</h3>
+            <ul className="list-inside list-disc space-y-1 text-sm">
+              {score.strengths.map((item, i) => (
+                <li key={i} className="text-green-600">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {score.weaknesses?.length ? (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-red-700">
+              Areas for Improvement
+            </h3>
+            <ul className="list-inside list-disc space-y-1 text-sm">
+              {score.weaknesses.map((item, i) => (
+                <li key={i} className="text-red-600">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {score.notes && (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Additional Notes</h3>
+            <p className="text-sm leading-relaxed">{score.notes}</p>
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };

@@ -21,6 +21,31 @@ export async function getAllJD() {
   }
 }
 
+export async function getUserJDs() {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      throw new Error("Not authenticated");
+    }
+
+    const jobs = await prisma.jobDescription.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: { cvs: true },
+        },
+      },
+    });
+
+    return jobs;
+  } catch (error) {
+    console.error("Error fetching user job descriptions:", error);
+    throw new Error("Failed to load job descriptions");
+  }
+}
+
 export const getJDById = async (id: string) => {
   try {
     const jd = await prisma.jobDescription.findUnique({

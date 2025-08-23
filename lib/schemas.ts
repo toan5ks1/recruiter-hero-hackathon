@@ -19,88 +19,80 @@ export type Question = z.infer<typeof questionSchema>;
 
 export const questionsSchema = z.array(questionSchema).length(4);
 
-const nullableString = z.string().optional().nullable();
+const nullableString = z.string().nullable().optional();
 
 export const resumeSchema = z.object({
   profile: nullableString,
-  skills: z.array(z.string().optional()).optional().nullable(),
+  skills: z.array(z.string()).nullable().optional(),
   education: z
     .array(
-      z
-        .object({
-          degree: nullableString,
-          school: nullableString,
-          startDate: nullableString,
-          endDate: nullableString,
-          description: nullableString,
-        })
-        .optional(),
+      z.object({
+        degree: nullableString,
+        school: nullableString,
+        startDate: nullableString,
+        endDate: nullableString,
+        description: nullableString,
+      }),
     )
-    .optional()
-    .nullable(),
+    .nullable()
+    .optional(),
   workExperience: z
     .array(
-      z
-        .object({
-          title: nullableString,
-          company: nullableString,
-          startDate: nullableString,
-          endDate: nullableString, // <-- allow null
-          description: nullableString, // <-- allow null
-        })
-        .optional(),
+      z.object({
+        title: nullableString,
+        company: nullableString,
+        startDate: nullableString,
+        endDate: nullableString,
+        description: nullableString,
+      }),
     )
-    .optional()
-    .nullable(),
+    .nullable()
+    .optional(),
   projects: z
     .array(
-      z
-        .object({
-          title: nullableString,
-          description: nullableString,
-          technologies: nullableString,
-        })
-        .optional(),
+      z.object({
+        title: nullableString,
+        description: nullableString,
+        technologies: nullableString,
+      }),
     )
-    .optional()
-    .nullable(),
+    .nullable()
+    .optional(),
   certifications: z
     .array(
-      z
-        .object({
-          name: nullableString,
-          issuer: nullableString,
-          date: nullableString,
-        })
-        .optional(),
+      z.object({
+        name: nullableString,
+        issuer: nullableString,
+        date: nullableString,
+      }),
     )
-    .optional()
-    .nullable(),
-  languages: z.array(z.string().optional()).optional().nullable(),
+    .nullable()
+    .optional(),
+  languages: z.array(z.string()).nullable().optional(),
   contact: z
     .object({
       name: nullableString,
       email: nullableString,
       phone: nullableString,
-      location: nullableString, // <-- allow null
+      location: nullableString,
       linkedin: nullableString,
     })
-    .optional()
-    .nullable(),
+    .nullable()
+    .optional(),
 });
 
 export type Resume = z.infer<typeof resumeSchema>;
 
 export const scoreResultSchema = z.object({
-  totalScore: z.number().min(0).max(100).optional(),
-  skillScore: z.number().min(0).max(100).optional(),
-  experienceScore: z.number().min(0).max(100).optional(),
-  educationScore: z.number().min(0).max(100).optional(),
-  languageScore: z.number().min(0).max(100).optional(),
+  totalScore: z.number().min(0).max(100),
+  skillScore: z.number().min(0).max(100),
+  experienceScore: z.number().min(0).max(100),
+  educationScore: z.number().min(0).max(100),
+  languageScore: z.number().min(0).max(100),
   notes: z.string().optional(),
-  reasoning: z.string().optional(),
-  strengths: z.array(z.string().optional()).optional(),
-  weaknesses: z.array(z.string().optional()).optional(),
+  reasoning: z.string(),
+  strengths: z.array(z.string()).optional(),
+  weaknesses: z.array(z.string()).optional(),
 });
 
 export type Score = z.infer<typeof scoreResultSchema>;

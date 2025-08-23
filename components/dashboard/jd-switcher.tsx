@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 
-import { getAllJD } from "@/lib/jd";
+import { getUserJDs } from "@/lib/jd";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -19,6 +19,9 @@ import { useCreateJDModal } from "../jd/jd-modal";
 type JDType = {
   id: string;
   title: string;
+  _count?: {
+    cvs: number;
+  };
 };
 
 export default function JDSwitcherClient() {
@@ -30,7 +33,7 @@ export default function JDSwitcherClient() {
   const { setShowCreateJDModal, CreateJDModal } = useCreateJDModal();
 
   useEffect(() => {
-    getAllJD()
+    getUserJDs()
       .then((data) => {
         setJds(data);
         setSelectedJD(data.find((jd) => jd?.id === pathname.split("/").pop()));

@@ -1,15 +1,8 @@
 import React from "react";
 
 import { Resume } from "@/lib/schemas";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = { title?: string; resume: Resume };
 
@@ -17,154 +10,167 @@ export const ResumePreview: React.FC<Props> = ({ resume, title }) => {
   if (!resume) return null;
 
   return (
-    <Card>
-      <Accordion
-        collapsible
-        type="single"
-        className="w-full"
-        defaultValue="resume"
-      >
-        <AccordionItem value="resume" className="border-b-0">
-          <AccordionTrigger className="px-4">
-            <CardTitle>Parsed Resume</CardTitle>
-          </AccordionTrigger>
-          <AccordionContent>
-            <CardContent>
-              <Accordion type="multiple" className="w-full">
-                <AccordionItem value="profile">
-                  <AccordionTrigger>Profile</AccordionTrigger>
-                  <AccordionContent>{resume.profile || "N/A"}</AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="skills">
-                  <AccordionTrigger>Skills</AccordionTrigger>
-                  <AccordionContent>
-                    {resume.skills?.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {resume.skills.map((skill, i) =>
-                          skill ? <Badge key={i}>{skill}</Badge> : null,
-                        )}
-                      </div>
-                    ) : (
-                      "N/A"
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="education">
-                  <AccordionTrigger>Education</AccordionTrigger>
-                  <AccordionContent>
-                    {resume.education?.length
-                      ? resume.education.map((edu, i) => (
-                          <div key={i} className="mb-4">
-                            <div className="font-semibold">{edu?.degree}</div>
-                            <div>{edu?.school}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {edu?.startDate} - {edu?.endDate}
-                            </div>
-                            <p>{edu?.description}</p>
-                            <Separator className="my-2" />
-                          </div>
-                        ))
-                      : "N/A"}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="workExperience">
-                  <AccordionTrigger>Work Experience</AccordionTrigger>
-                  <AccordionContent>
-                    {resume.workExperience?.length
-                      ? resume.workExperience.map((job, i) => (
-                          <div key={i} className="mb-4">
-                            <div className="font-semibold">
-                              {job?.title} @ {job?.company}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {job?.startDate} - {job?.endDate}
-                            </div>
-                            <p>{job?.description}</p>
-                            <Separator className="my-2" />
-                          </div>
-                        ))
-                      : "N/A"}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="projects">
-                  <AccordionTrigger>Projects</AccordionTrigger>
-                  <AccordionContent>
-                    {resume.projects?.length
-                      ? resume.projects.map((proj, i) => (
-                          <div key={i} className="mb-4">
-                            <div className="font-semibold">{proj?.title}</div>
-                            <p>{proj?.description}</p>
-                            <div className="text-sm text-muted-foreground">
-                              {proj?.technologies}
-                            </div>
-                            <Separator className="my-2" />
-                          </div>
-                        ))
-                      : "N/A"}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="certifications">
-                  <AccordionTrigger>Certifications</AccordionTrigger>
-                  <AccordionContent>
-                    {resume.certifications?.length
-                      ? resume.certifications.map((cert, i) => (
-                          <div key={i} className="mb-2">
-                            <div>
-                              {cert?.name} – {cert?.issuer}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {cert?.date}
-                            </div>
-                          </div>
-                        ))
-                      : "N/A"}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="languages">
-                  <AccordionTrigger>Languages</AccordionTrigger>
-                  <AccordionContent>
-                    {resume.languages?.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {resume.languages.map((lang, i) =>
-                          lang ? <Badge key={i}>{lang}</Badge> : null,
-                        )}
-                      </div>
-                    ) : (
-                      "N/A"
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="contact">
-                  <AccordionTrigger>Contact</AccordionTrigger>
-                  <AccordionContent>
-                    {resume.contact ? (
-                      <div className="space-y-1">
-                        <div>
-                          <strong>Name:</strong> {resume.contact.name}
-                        </div>
-                        <div>
-                          <strong>Email:</strong> {resume.contact.email}
-                        </div>
-                        <div>
-                          <strong>Phone:</strong> {resume.contact.phone}
-                        </div>
-                        <div>
-                          <strong>Location:</strong> {resume.contact.location}
-                        </div>
-                        <div>
-                          <strong>LinkedIn:</strong> {resume.contact.linkedin}
-                        </div>
-                      </div>
-                    ) : (
-                      "N/A"
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </CardContent>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+    <Card className="border-none">
+      <CardHeader>
+        <CardTitle>Parsed Resume</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {resume.profile && (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Profile</h3>
+            <p className="text-sm leading-relaxed">{resume.profile}</p>
+          </div>
+        )}
+
+        {resume.skills?.length ? (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Skills</h3>
+            <div className="flex flex-wrap gap-2">
+              {resume.skills.map((skill, i) =>
+                skill ? (
+                  <Badge key={i} variant="secondary">
+                    {skill}
+                  </Badge>
+                ) : null,
+              )}
+            </div>
+          </div>
+        ) : null}
+
+        {resume.education?.length ? (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Education</h3>
+            <div className="space-y-4">
+              {resume.education.map((edu, i) => (
+                <div key={i} className="rounded-lg border p-4">
+                  <div className="font-semibold">{edu?.degree}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {edu?.school}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {edu?.startDate} - {edu?.endDate}
+                  </div>
+                  {edu?.description && (
+                    <p className="mt-2 text-sm">{edu.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {resume.workExperience?.length ? (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Work Experience</h3>
+            <div className="space-y-4">
+              {resume.workExperience.map((job, i) => (
+                <div key={i} className="rounded-lg border p-4">
+                  <div className="font-semibold">
+                    {job?.title} @ {job?.company}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {job?.startDate} - {job?.endDate}
+                  </div>
+                  {job?.description && (
+                    <p className="mt-2 text-sm">{job.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {resume.projects?.length ? (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Projects</h3>
+            <div className="space-y-4">
+              {resume.projects.map((proj, i) => (
+                <div key={i} className="rounded-lg border p-4">
+                  <div className="font-semibold">{proj?.title}</div>
+                  {proj?.description && (
+                    <p className="mt-2 text-sm">{proj.description}</p>
+                  )}
+                  {proj?.technologies && (
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      <strong>Technologies:</strong> {proj.technologies}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {resume.certifications?.length ? (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Certifications</h3>
+            <div className="space-y-2">
+              {resume.certifications.map((cert, i) => (
+                <div key={i} className="rounded-lg border p-3">
+                  <div className="font-medium">
+                    {cert?.name} – {cert?.issuer}
+                  </div>
+                  {cert?.date && (
+                    <div className="text-sm text-muted-foreground">
+                      {cert.date}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {resume.languages?.length ? (
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Languages</h3>
+            <div className="flex flex-wrap gap-2">
+              {resume.languages.map((lang, i) =>
+                lang ? (
+                  <Badge key={i} variant="outline">
+                    {lang}
+                  </Badge>
+                ) : null,
+              )}
+            </div>
+          </div>
+        ) : null}
+
+        {resume.contact ? (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Contact Information</h3>
+            <div className="rounded-lg border p-4">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {resume.contact.name && (
+                  <div>
+                    <strong>Name:</strong> {resume.contact.name}
+                  </div>
+                )}
+                {resume.contact.email && (
+                  <div>
+                    <strong>Email:</strong> {resume.contact.email}
+                  </div>
+                )}
+                {resume.contact.phone && (
+                  <div>
+                    <strong>Phone:</strong> {resume.contact.phone}
+                  </div>
+                )}
+                {resume.contact.location && (
+                  <div>
+                    <strong>Location:</strong> {resume.contact.location}
+                  </div>
+                )}
+                {resume.contact.linkedin && (
+                  <div>
+                    <strong>LinkedIn:</strong> {resume.contact.linkedin}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </CardContent>
     </Card>
   );
 };

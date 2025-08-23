@@ -3,27 +3,32 @@
 import React, { useState } from "react";
 import { JobDescription } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { FileUp, Loader2 } from "lucide-react";
+import { FileUp, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
-import { createCVs, revalidateCV } from "@/lib/cv";
+import { createCVs } from "@/lib/cv";
 import { readPdf } from "@/lib/parse-resume-from-pdf/read-pdf";
 import { textItemsToText } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Link } from "@/components/ui/link";
 
-interface ResumeInputProps {
+interface ResumeInputModalProps {
   jd: JobDescription;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export const ResumeInput = ({ jd }: ResumeInputProps) => {
+export const ResumeInputModal: React.FC<ResumeInputModalProps> = ({
+  jd,
+  isOpen,
+  onClose,
+}) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -81,6 +86,10 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
 
     setFiles([]);
     setIsLoading(false);
+    onClose();
+
+    // Trigger refresh of CV list
+    window.dispatchEvent(new CustomEvent("refresh-cvs"));
 
     if (createdCVs) {
       createdCVs.forEach((createdCV) =>
@@ -96,7 +105,10 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
             cvContent: createdCV.content,
           }),
         })
-          .then(() => revalidateCV(jd.id))
+          .then(() => {
+            // Trigger another refresh after scoring is complete
+            window.dispatchEvent(new CustomEvent("refresh-cvs"));
+          })
           .catch((err) => {
             console.error("ScoreCV failed:", err);
           }),
@@ -105,53 +117,57 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
   };
 
   return (
-    <div
-      className="flex w-full justify-center"
-      onDragOver={(e) => {
-        e.preventDefault();
-        setIsDragging(true);
-      }}
-      onDragExit={() => setIsDragging(false)}
-      onDragEnd={() => setIsDragging(false)}
-      onDragLeave={() => setIsDragging(false)}
-      onDrop={(e) => {
-        e.preventDefault();
-        setIsDragging(false);
-        handleFileChange({
-          target: { files: e.dataTransfer.files },
-        } as React.ChangeEvent<HTMLInputElement>);
-      }}
-    >
-      <AnimatePresence>
-        {isDragging && (
-          <motion.div
-            className="pointer-events-none fixed z-10 flex h-dvh w-dvw flex-col items-center justify-center gap-1 bg-zinc-100/90 dark:bg-zinc-900/90"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div>Drag and drop files here</div>
-            <div className="text-sm text-zinc-500 dark:text-zinc-400">
-              {"(PDFs only)"}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <Card className="w-full">
-        <CardHeader className="space-y-4 text-center">
-          <div className="space-y-2">
-            <CardTitle className="text-3xl font-bold">Upload Resumes</CardTitle>
-            <CardDescription className="text-lg">
-              Upload CVs to analyze against the job description using{" "}
-              <Link href="https://sdk.vercel.ai">AI SDK</Link> and{" "}
-              <Link href="https://sdk.vercel.ai/providers/ai-sdk-providers/google-generative-ai">
-                Deepseek&apos;s Chat
-              </Link>
-            </CardDescription>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-2xl font-bold">
+              Upload Resumes
+            </DialogTitle>
           </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmitWithFiles} className="space-y-4">
+          <p className="text-muted-foreground">
+            Upload CVs to analyze against the job description using{" "}
+            <Link href="https://sdk.vercel.ai">AI SDK</Link> and{" "}
+            <Link href="https://sdk.vercel.ai/providers/ai-sdk-providers/google-generative-ai">
+              Deepseek&apos;s Chat
+            </Link>
+          </p>
+        </DialogHeader>
+
+        <div
+          className="flex w-full justify-center"
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragExit={() => setIsDragging(false)}
+          onDragEnd={() => setIsDragging(false)}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
+            handleFileChange({
+              target: { files: e.dataTransfer.files },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }}
+        >
+          <AnimatePresence>
+            {isDragging && (
+              <motion.div
+                className="pointer-events-none fixed z-10 flex h-dvh w-dvw flex-col items-center justify-center gap-1 bg-zinc-100/90 dark:bg-zinc-900/90"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <div>Drag and drop files here</div>
+                <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {"(PDFs only)"}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <form onSubmit={handleSubmitWithFiles} className="w-full space-y-4">
             <div
               className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/25 p-12 transition-colors hover:border-muted-foreground/50 hover:bg-muted/5`}
             >
@@ -196,8 +212,8 @@ export const ResumeInput = ({ jd }: ResumeInputProps) => {
               )}
             </Button>
           </form>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
