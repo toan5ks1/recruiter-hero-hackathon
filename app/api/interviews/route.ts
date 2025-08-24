@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Return the full interview link URL
-    const fullInterviewLink = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/interview/${interviewLink}`;
+    const fullInterviewLink = `${env.NEXT_PUBLIC_APP_URL}/interview/${interviewLink}`;
 
     return NextResponse.json({
       ...aiCall,

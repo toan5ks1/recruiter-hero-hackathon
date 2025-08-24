@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { cn } from "@/lib/utils";
+import { absoluteUrl, cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
@@ -745,7 +745,9 @@ export const AICallModal: React.FC<AICallModalProps> = ({
                               </Label>
                               <div className="flex gap-2">
                                 <Input
-                                  value={`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001"}/interview/${interview.interviewLink}`}
+                                  value={absoluteUrl(
+                                    `/interview/${interview.interviewLink}`,
+                                  )}
                                   readOnly
                                   className={`font-mono text-xs ${isExpired ? "bg-red-50 text-red-600" : ""}`}
                                 />
@@ -755,7 +757,9 @@ export const AICallModal: React.FC<AICallModalProps> = ({
                                   disabled={isExpired}
                                   onClick={() => {
                                     navigator.clipboard.writeText(
-                                      `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001"}/interview/${interview.interviewLink}`,
+                                      absoluteUrl(
+                                        `/interview/${interview.interviewLink}`,
+                                      ),
                                     );
                                     toast.success("Interview link copied!");
                                   }}
@@ -768,7 +772,9 @@ export const AICallModal: React.FC<AICallModalProps> = ({
                                   disabled={isExpired}
                                   onClick={() => {
                                     window.open(
-                                      `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001"}/interview/${interview.interviewLink}`,
+                                      absoluteUrl(
+                                        `/interview/${interview.interviewLink}`,
+                                      ),
                                       "_blank",
                                     );
                                   }}
