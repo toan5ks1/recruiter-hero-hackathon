@@ -25,8 +25,8 @@ export const JDSummary: React.FC<JDSummaryProps> = ({ jd, onUpdate }) => {
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <FileText className="h-5 w-5 text-primary" />
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                <FileText className="size-5 text-primary" />
               </div>
               <div>
                 <CardTitle className="text-lg">{jd.title}</CardTitle>
@@ -40,12 +40,12 @@ export const JDSummary: React.FC<JDSummaryProps> = ({ jd, onUpdate }) => {
                 onClick={() => setIsUploadModalOpen(true)}
                 className="gap-2"
               >
-                <Upload className="h-4 w-4" />
+                <Upload className="size-4" />
                 Upload Resumes
               </Button>
               <Link href={`/shortlist?job=${jd.id}`}>
                 <Button variant="outline" size="sm" className="gap-2">
-                  <Star className="h-4 w-4" />
+                  <Star className="size-4" />
                   View Shortlist
                 </Button>
               </Link>
@@ -55,7 +55,7 @@ export const JDSummary: React.FC<JDSummaryProps> = ({ jd, onUpdate }) => {
                 onClick={() => setIsEditModalOpen(true)}
                 className="gap-2"
               >
-                <Edit3 className="h-4 w-4" />
+                <Edit3 className="size-4" />
                 Edit
               </Button>
             </div>

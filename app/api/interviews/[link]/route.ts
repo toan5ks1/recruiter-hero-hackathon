@@ -67,7 +67,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       questions: interview.questions,
       jobTitle: interview.cv.jobDescription.title,
       jobDescription: interview.cv.jobDescription.content,
-      // Don't expose sensitive information
+      vapiAssistantId: interview.vapiAssistantId, // Include for Vapi Web SDK
+      // Don't expose sensitive information like API keys, user IDs, etc.
     });
   } catch (error) {
     console.error("Error retrieving interview by link:", error);

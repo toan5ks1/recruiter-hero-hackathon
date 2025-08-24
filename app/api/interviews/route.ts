@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 
+import { env } from "@/env.mjs";
 import { prisma } from "@/lib/db";
 import { generateInterviewLink } from "@/lib/interview-utils";
+import { createInterviewAssistant } from "@/lib/vapi";
 
 export async function POST(req: NextRequest) {
   try {
@@ -58,7 +60,57 @@ export async function POST(req: NextRequest) {
     // Generate unique interview link
     const interviewLink = generateInterviewLink();
 
-    // Create AI call record with interview link
+    // Create Vapi assistant for this interview
+    let vapiAssistantId = null;
+
+    // Check if Vapi is configured
+    console.log("🔍 Checking VAPI configuration...");
+    console.log("VAPI_API_KEY present:", !!env.VAPI_API_KEY);
+    console.log(
+      "NEXT_PUBLIC_VAPI_PUBLIC_KEY present:",
+      !!env.NEXT_PUBLIC_VAPI_PUBLIC_KEY,
+    );
+
+    if (env.VAPI_API_KEY && env.NEXT_PUBLIC_VAPI_PUBLIC_KEY) {
+      try {
+        console.log("🚀 Creating Vapi assistant for interview...");
+        console.log("Job Title:", cv.jobDescription.title);
+        console.log("Candidate Name:", candidateName);
+
+        const assistant = await createInterviewAssistant(
+          cv.jobDescription.title,
+          cv.jobDescription.content,
+          candidateName,
+          questions?.questions || [],
+        );
+
+        vapiAssistantId = assistant.id;
+        console.log(
+          `✅ Successfully created Vapi assistant: ${vapiAssistantId}`,
+        );
+      } catch (error) {
+        console.error("❌ Error creating Vapi assistant:", error);
+        console.error("Error details:", {
+          message: error.message,
+          stack: error.stack,
+          name: error.name,
+        });
+        console.warn(
+          "Continuing without Vapi integration - assistant creation failed",
+        );
+        // Continue without Vapi integration if assistant creation fails
+      }
+    } else {
+      console.warn(
+        "❌ Vapi not configured - interviews will work without voice functionality.",
+      );
+      console.warn(`VAPI_API_KEY: ${env.VAPI_API_KEY ? "SET" : "MISSING"}`);
+      console.warn(
+        `NEXT_PUBLIC_VAPI_PUBLIC_KEY: ${env.NEXT_PUBLIC_VAPI_PUBLIC_KEY ? "SET" : "MISSING"}`,
+      );
+    }
+
+    // Create AI call record with interview link and Vapi assistant
     const aiCall = await prisma.aICall.create({
       data: {
         cvId,
@@ -75,6 +127,7 @@ export async function POST(req: NextRequest) {
         createdBy: session.user.id,
         interviewLink,
         linkGeneratedAt: new Date(),
+        vapiAssistantId,
       },
     });
 

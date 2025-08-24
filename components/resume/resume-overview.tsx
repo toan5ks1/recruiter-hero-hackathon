@@ -53,7 +53,7 @@ const ResumeOverview = ({ cv }: ResumeOverviewProps) => {
       <Card className="flex flex-col gap-4 p-4">
         <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
           <div className="flex items-center gap-4">
-            <Avatar className="h-10 w-10">
+            <Avatar className="size-10">
               <AvatarFallback className="bg-primary/10 font-semibold text-primary">
                 {getInitials(cv.fileName)}
               </AvatarFallback>
@@ -97,7 +97,7 @@ const ResumeOverview = ({ cv }: ResumeOverviewProps) => {
         <DialogContent className="max-h-[90vh] max-w-4xl overflow-hidden">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Avatar className="h-8 w-8">
+              <Avatar className="size-8">
                 <AvatarFallback className="bg-primary/10 text-sm font-semibold text-primary">
                   {getInitials(cv.fileName)}
                 </AvatarFallback>

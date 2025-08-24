@@ -274,15 +274,44 @@ export const AICallModal: React.FC<AICallModalProps> = ({
   };
 
   const handleStartCall = async () => {
+    if (!scheduledInterview?.id) {
+      toast.error(
+        "No scheduled interview found. Please schedule an interview first.",
+      );
+      return;
+    }
+
     setCallStatus("connecting");
     try {
-      // Simulate AI call connection
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setCallStatus("active");
-      setActiveTab("live");
+      const response = await fetch(
+        `/api/interviews/id/${scheduledInterview.id}/start-call`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to start call");
+      }
+
+      if (data.success) {
+        setCallStatus("active");
+        toast.success(data.message || "Phone call initiated successfully");
+
+        // Refresh interview data to show updated status
+        loadExistingInterviews();
+      }
     } catch (error) {
+      console.error("Error starting call:", error);
       setCallStatus("idle");
-      toast.error("Failed to start AI call");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to start phone call",
+      );
     }
   };
 
@@ -545,9 +574,6 @@ export const AICallModal: React.FC<AICallModalProps> = ({
               {/* Newly created interview in this session */}
               {scheduledInterview && (
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-green-600">
-                    ✅ Just Created
-                  </h3>
                   <InterviewLinkDisplay
                     interviewLink={scheduledInterview.interviewLink}
                     candidateName={formData.candidateName}
@@ -747,6 +773,53 @@ export const AICallModal: React.FC<AICallModalProps> = ({
                                 >
                                   <ExternalLink className="size-4" />
                                 </Button>
+
+                                {/* Phone Call Button for Phone Interviews */}
+                                {interview.interviewMode === "phone" &&
+                                  interview.candidatePhone && (
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      disabled={
+                                        isExpired ||
+                                        interview.vapiCallStatus ===
+                                          "in-progress"
+                                      }
+                                      onClick={async () => {
+                                        try {
+                                          const response = await fetch(
+                                            `/api/interviews/id/${interview.id}/start-call`,
+                                            {
+                                              method: "POST",
+                                              headers: {
+                                                "Content-Type":
+                                                  "application/json",
+                                              },
+                                            },
+                                          );
+                                          const data = await response.json();
+
+                                          if (response.ok && data.success) {
+                                            toast.success(
+                                              "Phone call initiated!",
+                                            );
+                                            loadExistingInterviews(); // Refresh the data
+                                          } else {
+                                            toast.error(
+                                              data.error ||
+                                                "Failed to start call",
+                                            );
+                                          }
+                                        } catch (error) {
+                                          toast.error(
+                                            "Failed to start phone call",
+                                          );
+                                        }
+                                      }}
+                                    >
+                                      <Phone className="size-4" />
+                                    </Button>
+                                  )}
                               </div>
 
                               {/* Expiry Warning */}

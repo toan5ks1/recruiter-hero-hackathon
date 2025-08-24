@@ -151,7 +151,7 @@ export const GlobalShortlistManager: React.FC = () => {
     if (!cv.lastCallDate) {
       return (
         <Badge variant="outline" className="text-gray-600">
-          <Phone className="mr-1 h-3 w-3" />
+          <Phone className="mr-1 size-3" />
           No Call
         </Badge>
       );
@@ -161,35 +161,35 @@ export const GlobalShortlistManager: React.FC = () => {
       case "scheduled":
         return (
           <Badge className="border-blue-200 bg-blue-100 text-blue-800">
-            <Calendar className="mr-1 h-3 w-3" />
+            <Calendar className="mr-1 size-3" />
             Scheduled
           </Badge>
         );
       case "in_progress":
         return (
           <Badge className="border-yellow-200 bg-yellow-100 text-yellow-800">
-            <PhoneCall className="mr-1 h-3 w-3" />
+            <PhoneCall className="mr-1 size-3" />
             In Progress
           </Badge>
         );
       case "completed":
         return (
           <Badge className="border-green-200 bg-green-100 text-green-800">
-            <CheckCircle className="mr-1 h-3 w-3" />
+            <CheckCircle className="mr-1 size-3" />
             Completed
           </Badge>
         );
       case "failed":
         return (
           <Badge className="border-red-200 bg-red-100 text-red-800">
-            <XCircle className="mr-1 h-3 w-3" />
+            <XCircle className="mr-1 size-3" />
             Failed
           </Badge>
         );
       default:
         return (
           <Badge variant="outline">
-            <Clock className="mr-1 h-3 w-3" />
+            <Clock className="mr-1 size-3" />
             Pending
           </Badge>
         );
@@ -201,21 +201,21 @@ export const GlobalShortlistManager: React.FC = () => {
       case "qualified":
         return (
           <Badge className="border-green-200 bg-green-100 text-green-800">
-            <CheckCircle className="mr-1 h-3 w-3" />
+            <CheckCircle className="mr-1 size-3" />
             Qualified
           </Badge>
         );
       case "rejected":
         return (
           <Badge className="border-red-200 bg-red-100 text-red-800">
-            <XCircle className="mr-1 h-3 w-3" />
+            <XCircle className="mr-1 size-3" />
             Rejected
           </Badge>
         );
       case "needs_review":
         return (
           <Badge className="border-orange-200 bg-orange-100 text-orange-800">
-            <MessageSquare className="mr-1 h-3 w-3" />
+            <MessageSquare className="mr-1 size-3" />
             Needs Review
           </Badge>
         );
@@ -228,7 +228,7 @@ export const GlobalShortlistManager: React.FC = () => {
     return (
       <div className="space-y-4">
         <div className="py-8 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+          <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-primary"></div>
           <p className="mt-2 text-sm text-muted-foreground">
             Loading shortlisted candidates...
           </p>
@@ -246,7 +246,7 @@ export const GlobalShortlistManager: React.FC = () => {
             <CardTitle className="text-sm font-medium">
               Total Shortlisted
             </CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
+            <Star className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{shortlistedCVs.length}</div>
@@ -256,7 +256,7 @@ export const GlobalShortlistManager: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Called</CardTitle>
-            <PhoneCall className="h-4 w-4 text-muted-foreground" />
+            <PhoneCall className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -268,7 +268,7 @@ export const GlobalShortlistManager: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Qualified</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <CheckCircle className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -283,7 +283,7 @@ export const GlobalShortlistManager: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Calls</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Clock className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -301,7 +301,7 @@ export const GlobalShortlistManager: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-3 size-4 text-muted-foreground" />
               <Input
                 placeholder="Search candidates or jobs..."
                 value={searchTerm}
@@ -355,7 +355,7 @@ export const GlobalShortlistManager: React.FC = () => {
               }}
               variant="outline"
             >
-              <Filter className="mr-2 h-4 w-4" />
+              <Filter className="mr-2 size-4" />
               Clear Filters
             </Button>
           </div>
@@ -370,7 +370,7 @@ export const GlobalShortlistManager: React.FC = () => {
         <CardContent>
           {filteredCVs.length === 0 ? (
             <div className="py-8 text-center">
-              <User className="mx-auto h-12 w-12 text-muted-foreground" />
+              <User className="mx-auto size-12 text-muted-foreground" />
               <p className="mt-2 text-muted-foreground">
                 No shortlisted candidates found.
               </p>
@@ -394,7 +394,7 @@ export const GlobalShortlistManager: React.FC = () => {
                   {filteredCVs.map((cv) => (
                     <TableRow key={cv.id}>
                       <TableCell>
-                        <Avatar className="h-8 w-8">
+                        <Avatar className="size-8">
                           <AvatarFallback className="bg-primary/10 text-sm font-semibold text-primary">
                             {getInitials(cv.fileName)}
                           </AvatarFallback>
@@ -405,7 +405,7 @@ export const GlobalShortlistManager: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Briefcase className="h-4 w-4 text-muted-foreground" />
+                          <Briefcase className="size-4 text-muted-foreground" />
                           <span className="text-sm">
                             {cv.jobDescription.title}
                           </span>
@@ -428,23 +428,23 @@ export const GlobalShortlistManager: React.FC = () => {
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
+                            <Button variant="ghost" className="size-8 p-0">
                               <span className="sr-only">Open menu</span>
-                              <Bot className="h-4 w-4" />
+                              <Bot className="size-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => handleAICall(cv)}>
-                              <Bot className="mr-2 h-4 w-4" />
+                              <Bot className="mr-2 size-4" />
                               AI Phone Interview
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
-                              <MessageSquare className="mr-2 h-4 w-4" />
+                              <MessageSquare className="mr-2 size-4" />
                               View Call Notes
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <Calendar className="mr-2 h-4 w-4" />
+                              <Calendar className="mr-2 size-4" />
                               Schedule Follow-up
                             </DropdownMenuItem>
                           </DropdownMenuContent>

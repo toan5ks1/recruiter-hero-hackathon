@@ -50,13 +50,13 @@ export default function DashboardLoading() {
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="grid grid-cols-6 items-center gap-4 py-2">
                 <div className="flex items-center gap-2">
-                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <Skeleton className="size-8 rounded-full" />
                 </div>
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-5 w-20 rounded-full" />
                 <Skeleton className="h-5 w-12 rounded-full" />
                 <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-8 w-8" />
+                <Skeleton className="size-8" />
               </div>
             ))}
           </div>

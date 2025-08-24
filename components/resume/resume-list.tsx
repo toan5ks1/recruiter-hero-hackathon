@@ -99,7 +99,7 @@ const ResumeList = ({ jd }: JDInputProps) => {
     return (
       <div className="flex flex-col gap-4">
         <div className="py-8 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+          <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-primary"></div>
           <p className="mt-2 text-sm text-muted-foreground">
             Loading resumes...
           </p>

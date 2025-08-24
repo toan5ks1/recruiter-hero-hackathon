@@ -1,0 +1,14 @@
+# Add these environment variables to your .env file:
+
+VAPI_API_KEY=sk_your_private_api_key_here
+NEXT_PUBLIC_VAPI_PUBLIC_KEY=your_public_key_here
+VAPI_PHONE_NUMBER_ID=your_phone_number_id_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Instructions:
+# 1. Get your API keys from https://dashboard.vapi.ai
+# 2. Go to Settings → API Keys
+# 3. Copy the Private API Key (starts with sk_)
+# 4. Copy the Public Key 
+# 5. Add both to your .env file
+# 6. Restart your development server

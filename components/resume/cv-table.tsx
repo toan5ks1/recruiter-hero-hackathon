@@ -149,7 +149,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
     if (shortlisted) {
       return (
         <Badge className="border-blue-200 bg-blue-100 text-blue-800">
-          <Star className="mr-1 h-3 w-3 fill-current" />
+          <Star className="mr-1 size-3 fill-current" />
           Shortlisted
         </Badge>
       );
@@ -172,21 +172,21 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
       case "qualified":
         return (
           <Badge className="border-green-200 bg-green-100 text-green-800">
-            <CheckCircle className="mr-1 h-3 w-3" />
+            <CheckCircle className="mr-1 size-3" />
             Qualified
           </Badge>
         );
       case "disqualified":
         return (
           <Badge className="border-red-200 bg-red-100 text-red-800">
-            <XCircle className="mr-1 h-3 w-3" />
+            <XCircle className="mr-1 size-3" />
             Disqualified
           </Badge>
         );
       case "cancelled":
         return (
           <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-            <Ban className="mr-1 h-3 w-3" />
+            <Ban className="mr-1 size-3" />
             Cancelled
           </Badge>
         );
@@ -236,7 +236,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
   if (loading) {
     return (
       <div className="py-8 text-center">
-        <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
+        <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-primary"></div>
         <p className="mt-2 text-sm text-muted-foreground">Loading resumes...</p>
       </div>
     );
@@ -268,7 +268,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
             {cvs.map((cv) => (
               <TableRow key={cv.id}>
                 <TableCell>
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="size-10">
                     <AvatarFallback className="bg-primary/10 font-semibold text-primary">
                       {getInitials(cv.fileName)}
                     </AvatarFallback>
@@ -278,7 +278,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                   <div className="font-medium">{cv.fileName}</div>
                   {cv.reviewerNote && (
                     <div className="flex items-center text-sm text-muted-foreground">
-                      <MessageSquare className="mr-1 h-3 w-3" />
+                      <MessageSquare className="mr-1 size-3" />
                       {cv.reviewerNote}
                     </div>
                   )}
@@ -301,14 +301,14 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
+                      <Button variant="ghost" className="size-8 p-0">
+                        <MoreHorizontal className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem onClick={() => openDetailsModal(cv)}>
-                        <Eye className="mr-2 h-4 w-4" />
+                        <Eye className="mr-2 size-4" />
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -318,9 +318,9 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                         }
                       >
                         {cv.shortlisted ? (
-                          <StarOff className="mr-2 h-4 w-4" />
+                          <StarOff className="mr-2 size-4" />
                         ) : (
-                          <Star className="mr-2 h-4 w-4" />
+                          <Star className="mr-2 size-4" />
                         )}
                         {cv.shortlisted
                           ? "Remove from Shortlist"
@@ -334,7 +334,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                               handleStatusUpdate(cv.id, "qualified")
                             }
                           >
-                            <CheckCircle className="mr-2 h-4 w-4" />
+                            <CheckCircle className="mr-2 size-4" />
                             Mark as Qualified
                           </DropdownMenuItem>
                           <DropdownMenuItem
@@ -342,7 +342,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                               handleStatusUpdate(cv.id, "disqualified")
                             }
                           >
-                            <XCircle className="mr-2 h-4 w-4" />
+                            <XCircle className="mr-2 size-4" />
                             Mark as Disqualified
                           </DropdownMenuItem>
                         </>
@@ -351,7 +351,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                         <DropdownMenuItem
                           onClick={() => handleStatusUpdate(cv.id, "cancelled")}
                         >
-                          <Ban className="mr-2 h-4 w-4" />
+                          <Ban className="mr-2 size-4" />
                           Cancel Processing
                         </DropdownMenuItem>
                       )}
@@ -369,7 +369,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
           <DialogContent className="max-h-[90vh] max-w-4xl overflow-hidden">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <Avatar className="h-8 w-8">
+                <Avatar className="size-8">
                   <AvatarFallback className="bg-primary/10 text-sm font-semibold text-primary">
                     {getInitials(selectedCV.fileName)}
                   </AvatarFallback>

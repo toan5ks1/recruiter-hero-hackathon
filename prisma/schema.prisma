@@ -137,7 +137,7 @@ model AICall {
   startedAt          DateTime?
   endedAt            DateTime?
   duration           Int
-  candidatePhone     String
+  candidatePhone     String?
   aiVoice            String    @default("sarah")
   customInstructions String?
   questions          Json?
@@ -155,6 +155,14 @@ model AICall {
   interviewMode      String    @default("link") // "phone" or "link"
   interviewLink      String?   @unique
   linkGeneratedAt    DateTime?
+  // Vapi integration fields
+  vapiAssistantId    String?   // Vapi assistant ID for this interview
+  vapiCallId         String?   // Vapi call ID when call is initiated
+  vapiCallStatus     String?   // Vapi call status: queued, ringing, in-progress, ended
+  vapiRecordingUrl   String?   // URL to the recorded interview
+  vapiTranscript     String?   // Full transcript from Vapi
+  vapiCost           Float?    // Cost breakdown from Vapi
+  vapiSummary        String?   // AI-generated summary from Vapi
   cv                 CV        @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
   @@map("ai_calls")

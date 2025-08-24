@@ -21,6 +21,7 @@ import { formatInterviewDate } from "@/lib/interview-utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { VapiClient } from "@/components/interview/vapi-client";
 
 interface InterviewData {
   id: string;
@@ -32,6 +33,7 @@ interface InterviewData {
   questions?: { questions: string[] };
   jobTitle: string;
   jobDescription: string;
+  vapiAssistantId?: string;
 }
 
 interface CandidateInterviewInterfaceProps {
@@ -111,7 +113,7 @@ export const CandidateInterviewInterface: React.FC<
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+          <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
           <p className="mt-4 text-gray-600">Loading your interview...</p>
         </div>
       </div>
@@ -165,7 +167,7 @@ export const CandidateInterviewInterface: React.FC<
             return (
               <div key={step.id} className="flex items-center">
                 <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-full border-2 ${
+                  className={`flex size-12 items-center justify-center rounded-full border-2 ${
                     isActive
                       ? "border-blue-600 bg-blue-600 text-white"
                       : isCompleted
@@ -174,9 +176,9 @@ export const CandidateInterviewInterface: React.FC<
                   }`}
                 >
                   {isCompleted ? (
-                    <CheckCircle className="h-6 w-6" />
+                    <CheckCircle className="size-6" />
                   ) : (
-                    <Icon className="h-6 w-6" />
+                    <Icon className="size-6" />
                   )}
                 </div>
                 <div className="ml-3 text-sm">
@@ -321,7 +323,7 @@ export const CandidateInterviewInterface: React.FC<
                   Pre-Interview Setup
                 </h2>
                 <p className="text-lg text-gray-600">
-                  Let's make sure everything is ready for your interview
+                  Let&apos;s make sure everything is ready for your interview
                 </p>
               </div>
 
@@ -457,13 +459,13 @@ export const CandidateInterviewInterface: React.FC<
 
                     <div className="space-y-2">
                       <div className="flex items-center justify-center space-x-1">
-                        <div className="h-2 w-2 animate-bounce rounded-full bg-blue-600"></div>
+                        <div className="size-2 animate-bounce rounded-full bg-blue-600"></div>
                         <div
-                          className="h-2 w-2 animate-bounce rounded-full bg-blue-600"
+                          className="size-2 animate-bounce rounded-full bg-blue-600"
                           style={{ animationDelay: "0.1s" }}
                         ></div>
                         <div
-                          className="h-2 w-2 animate-bounce rounded-full bg-blue-600"
+                          className="size-2 animate-bounce rounded-full bg-blue-600"
                           style={{ animationDelay: "0.2s" }}
                         ></div>
                       </div>
@@ -495,59 +497,73 @@ export const CandidateInterviewInterface: React.FC<
             <div className="text-center">
               <div className="mb-8">
                 <h2 className="mb-4 text-3xl font-bold text-gray-900">
-                  Interview in Progress
+                  AI Voice Interview
                 </h2>
                 <p className="text-lg text-gray-600">
-                  You are now connected with the AI interviewer
+                  Start your interview with our AI interviewer
                 </p>
               </div>
 
-              <Card className="mx-auto max-w-2xl">
+              <Card className="mx-auto max-w-4xl">
                 <CardContent className="pb-8 pt-8">
-                  <div className="space-y-6">
-                    <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-blue-100">
-                      <Mic className="size-16 text-blue-600" />
+                  {interview.vapiAssistantId ? (
+                    <VapiClient
+                      assistantId={interview.vapiAssistantId}
+                      interviewId={interview.id}
+                      onCallStart={() => {
+                        toast.success("Interview started successfully!");
+                      }}
+                      onCallEnd={() => {
+                        toast.info("Interview completed. Thank you!");
+                        // Optionally redirect or show completion message
+                      }}
+                      onMessage={(message) => {
+                        console.log("Interview message:", message);
+                      }}
+                      onError={(error) => {
+                        toast.error(`Interview error: ${error}`);
+                      }}
+                    />
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="mx-auto flex size-32 items-center justify-center rounded-full bg-gray-100">
+                        <Mic className="size-16 text-gray-400" />
+                      </div>
+
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-gray-700">
+                          Voice Interview Not Available
+                        </h3>
+
+                        <p className="text-gray-600">
+                          This interview link was created without voice AI
+                          integration. You can still proceed with a traditional
+                          interview process.
+                        </p>
+                      </div>
+
+                      <div className="rounded-lg bg-blue-50 p-4">
+                        <p className="text-sm text-blue-800">
+                          <strong>Alternative Options:</strong>
+                          <br />• Contact the recruiter for a phone/video
+                          interview
+                          <br />• Check if there are other interview links
+                          available
+                          <br />• The recruiter can enable voice AI for future
+                          interviews
+                        </p>
+                      </div>
                     </div>
-
-                    <div className="space-y-4">
-                      <Badge variant="default" className="bg-green-600">
-                        <div className="flex items-center gap-2">
-                          <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
-                          Live Interview
-                        </div>
-                      </Badge>
-
-                      <h3 className="text-xl font-semibold text-blue-700">
-                        AI Interviewer is Ready
-                      </h3>
-
-                      <p className="text-gray-600">
-                        The AI will start asking you questions. Speak clearly
-                        and take your time to answer.
-                      </p>
-                    </div>
-
-                    <div className="rounded-lg bg-amber-50 p-4">
-                      <p className="text-sm text-amber-800">
-                        <strong>This is a placeholder interface.</strong>
-                        <br />
-                        The actual AI voice call integration will be implemented
-                        here.
-                      </p>
-                    </div>
-
-                    <div className="flex justify-center space-x-4">
-                      <Button variant="outline" size="sm">
-                        <Mic className="mr-2 h-4 w-4" />
-                        Mute
-                      </Button>
-                      <Button variant="destructive" size="sm">
-                        End Interview
-                      </Button>
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
+
+              <div className="mt-6">
+                <Button variant="outline" onClick={handleBackToPreparation}>
+                  <ArrowLeft className="mr-2 size-4" />
+                  Back to Preparation
+                </Button>
+              </div>
             </div>
           )}
         </div>
