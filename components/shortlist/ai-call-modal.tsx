@@ -125,6 +125,7 @@ export const AICallModal: React.FC<AICallModalProps> = ({
   >("idle");
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
   const [scheduledInterview, setScheduledInterview] = useState<{
+    id: string;
     interviewLink: string;
     scheduledAt: Date;
   } | null>(null);
@@ -243,6 +244,7 @@ export const AICallModal: React.FC<AICallModalProps> = ({
       console.log("Interview created successfully:", result);
       setGeneratedLink(result.fullInterviewLink);
       setScheduledInterview({
+        id: result.id,
         interviewLink: result.fullInterviewLink,
         scheduledAt: scheduledDateTime,
       });

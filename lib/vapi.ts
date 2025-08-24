@@ -98,7 +98,7 @@ export class VapiServerClient {
   private baseUrl = "https://api.vapi.ai";
 
   constructor() {
-    this.apiKey = env.VAPI_API_KEY;
+    this.apiKey = env.VAPI_API_KEY || "";
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {

@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     console.log("Vapi webhook received:", event.type, event.call?.id);
 
     // Find the interview record by Vapi call ID
-    let interview = null;
+    let interview: any = null;
     if (event.call?.id) {
       interview = await prisma.aICall.findFirst({
         where: { vapiCallId: event.call.id },

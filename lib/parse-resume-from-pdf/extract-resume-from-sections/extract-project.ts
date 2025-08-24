@@ -2,6 +2,7 @@ import type {
   FeatureSet,
   ResumeProject,
   ResumeSectionToLines,
+  TextScores,
 } from "@/lib/parse-resume-from-pdf/types";
 import { getSectionLinesByKeywords } from "@/lib/parse-resume-from-pdf/extract-resume-from-sections/lib/get-section-lines";
 import {
@@ -18,7 +19,10 @@ import {
 
 export const extractProject = (sections: ResumeSectionToLines) => {
   const projects: ResumeProject[] = [];
-  const projectsScores = [];
+  const projectsScores: Array<{
+    projectScores: TextScores;
+    dateScores: TextScores;
+  }> = [];
   const lines = getSectionLinesByKeywords(sections, ["project"]);
   const subsections = divideSectionIntoSubsections(lines);
 

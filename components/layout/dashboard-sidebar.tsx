@@ -73,12 +73,12 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
             <div className="flex h-full max-h-screen flex-1 flex-col gap-2">
               <div className="flex h-14 items-center justify-between p-4 lg:h-[60px]">
                 {isSidebarExpanded ? (
-                  <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
                     <Icons.logo className="size-6" />
                     <span className="font-semibold">Resume Hero</span>
                   </Link>
                 ) : (
-                  <Link href="/" className="flex items-center justify-center hover:opacity-80 transition-opacity">
+                  <Link href="/" className="flex items-center justify-center transition-opacity hover:opacity-80">
                     <Icons.logo className="size-6" />
                   </Link>
                 )}

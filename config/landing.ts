@@ -9,12 +9,14 @@ export const infos: InfoLdg[] = [
     list: [
       {
         title: "Smart Screening",
-        description: "AI automatically analyzes and scores CVs against job descriptions.",
+        description:
+          "AI automatically analyzes and scores CVs against job descriptions.",
         icon: "search",
       },
       {
         title: "Voice Interviews",
-        description: "Conduct natural voice interviews powered by advanced AI technology.",
+        description:
+          "Conduct natural voice interviews powered by advanced AI technology.",
         icon: "messages",
       },
       {
@@ -39,7 +41,8 @@ export const infos: InfoLdg[] = [
       },
       {
         title: "Real-time Analytics",
-        description: "Track recruitment metrics and optimize your hiring process.",
+        description:
+          "Track recruitment metrics and optimize your hiring process.",
         icon: "lineChart",
       },
       {

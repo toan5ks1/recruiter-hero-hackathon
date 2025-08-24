@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     const interviewLink = generateInterviewLink();
 
     // Create Vapi assistant for this interview
-    let vapiAssistantId = null;
+    let vapiAssistantId: string | null = null;
 
     // Check if Vapi is configured
     console.log("🔍 Checking VAPI configuration...");
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
         candidateEmail,
         aiVoice,
         customInstructions,
-        questions: questions ? { questions } : null,
+        questions: questions ? { questions } : undefined,
         status: "scheduled",
         createdBy: session.user.id,
         interviewLink,

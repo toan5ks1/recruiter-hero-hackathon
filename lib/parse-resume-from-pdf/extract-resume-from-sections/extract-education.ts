@@ -3,6 +3,7 @@ import type {
   FeatureSet,
   ResumeSectionToLines,
   ResumeEducation,
+  TextScores,
 } from "@/lib/parse-resume-from-pdf/types";
 import { getSectionLinesByKeywords } from "@/lib/parse-resume-from-pdf/extract-resume-from-sections/lib/get-section-lines";
 import { divideSectionIntoSubsections } from "@/lib/parse-resume-from-pdf/extract-resume-from-sections/lib/subsections";
@@ -64,7 +65,12 @@ const GPA_FEATURE_SETS: FeatureSet[] = [
 
 export const extractEducation = (sections: ResumeSectionToLines) => {
   const educations: ResumeEducation[] = [];
-  const educationsScores = [];
+  const educationsScores: Array<{
+    schoolScores: TextScores;
+    degreeScores: TextScores;
+    gpaScores: TextScores;
+    dateScores: TextScores;
+  }> = [];
   const lines = getSectionLinesByKeywords(sections, ["education"]);
   const subsections = divideSectionIntoSubsections(lines);
   for (const subsectionLines of subsections) {

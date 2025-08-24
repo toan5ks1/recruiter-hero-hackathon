@@ -557,13 +557,6 @@ export const CandidateInterviewInterface: React.FC<
                   )}
                 </CardContent>
               </Card>
-
-              <div className="mt-6">
-                <Button variant="outline" onClick={handleBackToPreparation}>
-                  <ArrowLeft className="mr-2 size-4" />
-                  Back to Preparation
-                </Button>
-              </div>
             </div>
           )}
         </div>

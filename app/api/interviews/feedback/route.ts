@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 
+import { prisma } from "@/lib/db";
+
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
@@ -20,6 +22,27 @@ export async function POST(req: NextRequest) {
 
     // Analyze the transcript and generate comprehensive feedback
     const feedback = await generateAdvancedFeedback(transcript);
+
+    // Save feedback to database and update interview status
+    if (interviewId) {
+      try {
+        await prisma.aICall.update({
+          where: { id: interviewId },
+          data: {
+            aiAnalysis: feedback,
+            score: feedback.overall_score,
+            status: "completed",
+            result: "success",
+            transcript: { transcript },
+            endedAt: new Date(),
+          },
+        });
+        console.log("Feedback saved to database for interview:", interviewId);
+      } catch (error) {
+        console.error("Error saving feedback to database:", error);
+        // Don't fail the request if database save fails
+      }
+    }
 
     return NextResponse.json(feedback);
   } catch (error) {
@@ -268,8 +291,8 @@ function generateStrengths(
   responseAnalysis: any,
   communicationStyle: any,
   topicCoverage: any,
-) {
-  const strengths = [];
+): string[] {
+  const strengths: string[] = [];
 
   if (responseAnalysis.detail_level > 0.7) {
     strengths.push("Provides detailed and comprehensive responses");
@@ -296,8 +319,8 @@ function generateImprovements(
   responseAnalysis: any,
   communicationStyle: any,
   topicCoverage: any,
-) {
-  const improvements = [];
+): string[] {
+  const improvements: string[] = [];
 
   if (responseAnalysis.detail_level < 0.5) {
     improvements.push("Provide more detailed responses with specific examples");

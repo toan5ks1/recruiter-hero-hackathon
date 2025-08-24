@@ -25,6 +25,15 @@ interface CV {
   uploadedAt: Date;
   shortlisted: boolean;
   reviewerNote: string | null;
+  interviewFeedback: any;
+  interviewNotes: string | null;
+  interviewQuestions: any;
+  interviewScheduledAt: Date | null;
+  interviewStage: string | null;
+  aiCallNotes: string | null;
+  callResult: string | null;
+  callStatus: string | null;
+  lastCallDate: Date | null;
 }
 
 const ResumeList = ({ jd }: JDInputProps) => {

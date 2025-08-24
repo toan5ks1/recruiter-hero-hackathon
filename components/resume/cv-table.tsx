@@ -4,9 +4,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { JobDescription } from "@prisma/client";
 import {
   Ban,
-  Calendar,
+  Bot,
   CheckCircle,
-  Clock,
   Eye,
   MessageSquare,
   MoreHorizontal,
@@ -45,6 +44,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { InterviewResults } from "@/components/resume/interview-results";
 import { ResumeScore } from "@/components/resume/resume-score";
 import { ResumePreview } from "@/components/resume/resume-view";
 
@@ -61,6 +61,10 @@ interface CV {
   uploadedAt: Date;
   shortlisted: boolean;
   reviewerNote: string | null;
+  // Interview-related fields
+  latestInterviewStatus?: string;
+  latestInterviewScore?: number;
+  hasCompletedInterview?: boolean;
 }
 
 interface CVTableProps {
@@ -195,6 +199,44 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
     }
   };
 
+  const getInterviewStatusBadge = (cv: CV) => {
+    if (cv.hasCompletedInterview && cv.latestInterviewScore !== undefined) {
+      return (
+        <div className="flex flex-col items-center space-y-1">
+          <Badge variant="default" className="bg-blue-100 text-blue-800">
+            Completed
+          </Badge>
+          <span className="text-xs text-gray-600">
+            {cv.latestInterviewScore}/100
+          </span>
+        </div>
+      );
+    }
+
+    if (cv.latestInterviewStatus) {
+      switch (cv.latestInterviewStatus) {
+        case "scheduled":
+          return <Badge variant="secondary">Scheduled</Badge>;
+        case "in_progress":
+          return (
+            <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
+              In Progress
+            </Badge>
+          );
+        case "completed":
+          return (
+            <Badge variant="default" className="bg-blue-100 text-blue-800">
+              Completed
+            </Badge>
+          );
+        default:
+          return <Badge variant="outline">{cv.latestInterviewStatus}</Badge>;
+      }
+    }
+
+    return <span className="text-sm text-gray-400">No interview</span>;
+  };
+
   const handleStatusUpdate = async (cvId: string, newStatus: string) => {
     try {
       await updateCVStatus(cvId, newStatus as any);
@@ -260,6 +302,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
               <TableHead>Candidate</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Score</TableHead>
+              <TableHead>Interview</TableHead>
               <TableHead>Uploaded</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
@@ -293,6 +336,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                     <span className="text-muted-foreground">N/A</span>
                   )}
                 </TableCell>
+                <TableCell>{getInterviewStatusBadge(cv)}</TableCell>
                 <TableCell>
                   <div className="text-sm text-muted-foreground">
                     {new Date(cv.uploadedAt).toLocaleDateString()}
@@ -386,7 +430,7 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
               onValueChange={setActiveTab}
               className="h-full"
             >
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="score" disabled={!selectedCV.score}>
                   <CheckCircle className="mr-2 size-4" />
                   Score Analysis
@@ -394,6 +438,10 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                 <TabsTrigger value="resume" disabled={!selectedCV.resume}>
                   <Eye className="mr-2 size-4" />
                   Resume Preview
+                </TabsTrigger>
+                <TabsTrigger value="interview">
+                  <Bot className="mr-2 size-4" />
+                  Interview Results
                 </TabsTrigger>
               </TabsList>
 
@@ -408,6 +456,10 @@ export const CVTable: React.FC<CVTableProps> = ({ jd }) => {
                   {selectedCV.resume && (
                     <ResumePreview resume={selectedCV.resume as any} />
                   )}
+                </TabsContent>
+
+                <TabsContent value="interview" className="h-full">
+                  <InterviewResults cvId={selectedCV.id} />
                 </TabsContent>
               </div>
             </Tabs>

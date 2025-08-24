@@ -34,7 +34,8 @@ export default async function HeroLanding() {
           )}
         >
           <span className="mr-3">🚀</span>
-          <span className="hidden md:flex">Powered by&nbsp;</span> AI Voice Interviews
+          <span className="hidden md:flex">Powered by&nbsp;</span> AI Voice
+          Interviews
           <Icons.arrowRight className="ml-2 size-3.5" />
         </Link>
 
@@ -49,7 +50,9 @@ export default async function HeroLanding() {
           className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.35s", animationFillMode: "forwards" }}
         >
-          AI-powered recruiting platform with automated CV screening, intelligent shortlisting, and voice-enabled interviews. Find the perfect candidates faster than ever.
+          AI-powered recruiting platform with automated CV screening,
+          intelligent shortlisting, and voice-enabled interviews. Find the
+          perfect candidates faster than ever.
         </p>
 
         <div

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { CV } from "@prisma/client";
 import { JsonObject } from "@prisma/client/runtime/library";
-import { ScanText, Target, X } from "lucide-react";
+import { Bot, ScanText, Target, X } from "lucide-react";
 
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { InterviewResults } from "@/components/resume/interview-results";
 import { ResumeScore } from "@/components/resume/resume-score";
 import { ResumePreview } from "@/components/resume/resume-view";
 
@@ -116,7 +117,7 @@ const ResumeOverview = ({ cv }: ResumeOverviewProps) => {
             onValueChange={setActiveTab}
             className="h-full"
           >
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="score" disabled={!cv.score}>
                 <Target className="mr-2 size-4" />
                 Score Analysis
@@ -124,6 +125,10 @@ const ResumeOverview = ({ cv }: ResumeOverviewProps) => {
               <TabsTrigger value="resume" disabled={!cv.resume}>
                 <ScanText className="mr-2 size-4" />
                 Resume Preview
+              </TabsTrigger>
+              <TabsTrigger value="interview">
+                <Bot className="mr-2 size-4" />
+                Interview Results
               </TabsTrigger>
             </TabsList>
 
@@ -134,6 +139,10 @@ const ResumeOverview = ({ cv }: ResumeOverviewProps) => {
 
               <TabsContent value="resume" className="h-full">
                 {cv.resume && <ResumePreview resume={cv.resume as any} />}
+              </TabsContent>
+
+              <TabsContent value="interview" className="h-full">
+                <InterviewResults cvId={cv.id} />
               </TabsContent>
             </div>
           </Tabs>

@@ -53,7 +53,7 @@ export async function createInterviewRound(data: CreateInterviewRoundData) {
         durationMinutes: data.durationMinutes || 60,
         interviewerEmail: data.interviewerEmail,
         interviewerName: data.interviewerName,
-        questions: data.questions ? { questions: data.questions } : null,
+        questions: data.questions ? { questions: data.questions } : undefined,
       },
     });
 

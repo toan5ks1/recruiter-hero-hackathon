@@ -3,61 +3,70 @@ import { auth } from "@/auth";
 
 import { prisma } from "@/lib/db";
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
-export async function GET(req: NextRequest, { params }: RouteParams) {
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> },
+) {
   try {
     const session = await auth();
+    const { id } = await context.params;
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id: cvId } = params;
-
-    if (!cvId) {
-      return NextResponse.json({ error: "CV ID is required" }, { status: 400 });
-    }
-
-    // Verify user owns this CV
-    const cv = await prisma.cV.findUnique({
-      where: { id: cvId },
-      include: { jobDescription: true },
-    });
-
-    if (!cv) {
-      return NextResponse.json({ error: "CV not found" }, { status: 404 });
-    }
-
-    if (cv.jobDescription.userId !== session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
-
-    // Fetch all interviews for this CV
+    // Fetch all AI calls (interviews) for this CV
     const interviews = await prisma.aICall.findMany({
-      where: { cvId },
-      orderBy: { createdAt: "desc" },
+      where: {
+        cvId: id,
+      },
+      orderBy: {
+        scheduledAt: "desc",
+      },
       select: {
         id: true,
-        interviewMode: true,
         scheduledAt: true,
+        endedAt: true,
+        status: true,
+        result: true,
+        score: true,
+        aiAnalysis: true,
+        transcript: true,
         duration: true,
         candidateName: true,
         candidateEmail: true,
-        status: true,
-        interviewLink: true,
-        linkGeneratedAt: true,
-        createdAt: true,
+        interviewMode: true,
+        vapiCallStatus: true,
+        vapiTranscript: true,
+        vapiSummary: true,
+        vapiCost: true,
       },
     });
 
-    return NextResponse.json(interviews);
+    // Transform the data to match the frontend interface
+    const transformedInterviews = interviews.map((interview) => ({
+      id: interview.id,
+      scheduledAt: interview.scheduledAt.toISOString(),
+      endedAt: interview.endedAt?.toISOString(),
+      status: interview.status || "scheduled",
+      result: interview.result,
+      score: interview.score,
+      aiAnalysis: interview.aiAnalysis,
+      transcript:
+        interview.transcript ||
+        (interview.vapiTranscript
+          ? { transcript: interview.vapiTranscript }
+          : null),
+      duration: interview.duration,
+      candidateName: interview.candidateName,
+      candidateEmail: interview.candidateEmail,
+      interviewMode: interview.interviewMode,
+      vapiCallStatus: interview.vapiCallStatus,
+    }));
+
+    return NextResponse.json(transformedInterviews);
   } catch (error) {
-    console.error("Error fetching CV interviews:", error);
+    console.error("Error fetching interviews:", error);
     return NextResponse.json(
       { error: "Failed to fetch interviews" },
       { status: 500 },

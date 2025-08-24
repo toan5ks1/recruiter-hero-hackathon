@@ -23,14 +23,14 @@ export const PROFILE_SECTION: ResumeKey = "profile";
 export const groupLinesIntoSections = (lines: Lines) => {
   let sections: ResumeSectionToLines = {};
   let sectionName: string = PROFILE_SECTION;
-  let sectionLines = [];
+  let sectionLines: Line[] = [];
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const text = line[0]?.text.trim();
     if (isSectionTitle(line, i)) {
       sections[sectionName] = [...sectionLines];
       sectionName = text;
-      sectionLines = [];
+      sectionLines = [] as Line[];
     } else {
       sectionLines.push(line);
     }
