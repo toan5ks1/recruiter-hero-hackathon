@@ -1,10 +1,10 @@
 <a href="https://next-saas-stripe-starter.vercel.app">
-  <img alt="SaaS Starter" src="public/_static/og.jpg">
+  <img alt="Resume Hero" src="public/_static/og.jpg">
   <h1 align="center">Next SaaS Stripe Starter</h1>
 </a>
 
 <p align="center">
-  Start at full speed with SaaS Starter !
+  Start at full speed with Resume Hero !
 </p>
 
 <p align="center">
@@ -26,7 +26,7 @@
 
 Empower your next project with the stack of Next.js 14, Prisma, Neon, Auth.js v5, Resend, React Email, Shadcn/ui, and Stripe.
 <br/>
-All seamlessly integrated with the SaaS Starter to accelerate your development and saas journey.
+All seamlessly integrated with the Resume Hero to accelerate your development and saas journey.
 
 ## Installation
 
@@ -66,6 +66,7 @@ pnpm run dev
 > Use this command for update your project: `ncu -i --format group`
 
 ## Roadmap
+
 - [ ] Upgrade eslint to v9
 - [ ] Add resend for success subscriptions
 
@@ -126,5 +127,7 @@ This project was inspired by shadcn's [Taxonomy](https://github.com/shadcn-ui/ta
 - Shadcn ([@shadcn](https://twitter.com/shadcn))
 - Steven Tey ([@steventey](https://twitter.com/steventey))
 - Antonio Erdeljac ([@YTCodeAntonio](https://twitter.com/AntonioErdeljac))
+
 # recruiter-hero-hackathon
+
 # recruiter-hero-hackathon

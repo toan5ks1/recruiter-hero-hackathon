@@ -2,50 +2,50 @@ import { FeatureLdg, InfoLdg, TestimonialType } from "types";
 
 export const infos: InfoLdg[] = [
   {
-    title: "Empower your projects",
+    title: "AI-Powered Recruitment",
     description:
-      "Unlock the full potential of your projects with our open-source SaaS platform. Collaborate seamlessly, innovate effortlessly, and scale limitlessly.",
+      "Transform your hiring process with intelligent CV screening, automated shortlisting, and AI-driven voice interviews. Find the perfect candidates faster and more efficiently than ever before.",
     image: "/_static/illustrations/work-from-home.jpg",
     list: [
       {
-        title: "Collaborative",
-        description: "Work together with your team members in real-time.",
-        icon: "laptop",
+        title: "Smart Screening",
+        description: "AI automatically analyzes and scores CVs against job descriptions.",
+        icon: "search",
       },
       {
-        title: "Innovative",
-        description: "Stay ahead of the curve with access constant updates.",
-        icon: "settings",
+        title: "Voice Interviews",
+        description: "Conduct natural voice interviews powered by advanced AI technology.",
+        icon: "messages",
       },
       {
-        title: "Scalable",
+        title: "Intelligent Matching",
         description:
-          "Our platform offers the scalability needed to adapt to your needs.",
+          "Our AI finds the best candidates by understanding skills and requirements.",
         icon: "search",
       },
     ],
   },
   {
-    title: "Seamless Integration",
+    title: "Streamlined Workflow",
     description:
-      "Integrate our open-source SaaS seamlessly into your existing workflows. Effortlessly connect with your favorite tools and services for a streamlined experience.",
+      "Seamlessly manage your entire recruitment pipeline from CV upload to final interviews. Collaborate with your team and make data-driven hiring decisions with comprehensive analytics.",
     image: "/_static/illustrations/work-from-home.jpg",
     list: [
       {
-        title: "Flexible",
+        title: "Team Collaboration",
         description:
-          "Customize your integrations to fit your unique requirements.",
-        icon: "laptop",
+          "Work together with your recruitment team to evaluate candidates.",
+        icon: "user",
       },
       {
-        title: "Efficient",
-        description: "Streamline your processes and reducing manual effort.",
-        icon: "search",
+        title: "Real-time Analytics",
+        description: "Track recruitment metrics and optimize your hiring process.",
+        icon: "lineChart",
       },
       {
-        title: "Reliable",
+        title: "Automated Pipeline",
         description:
-          "Rely on our robust infrastructure and comprehensive documentation.",
+          "Streamline from application to interview with intelligent automation.",
         icon: "settings",
       },
     ],
@@ -54,97 +54,97 @@ export const infos: InfoLdg[] = [
 
 export const features: FeatureLdg[] = [
   {
-    title: "Feature 1",
+    title: "Resume Upload & Analysis",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "nextjs",
+      "Upload CVs in multiple formats and get instant AI-powered analysis with skill matching and compatibility scores.",
+    link: "/dashboard",
+    icon: "post",
   },
   {
-    title: "Feature 2",
+    title: "Job Description Matching",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "google",
+      "Create detailed job descriptions and let AI automatically match the best candidates based on requirements.",
+    link: "/dashboard",
+    icon: "search",
   },
   {
-    title: "Feature 3",
+    title: "AI Voice Interviews",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "gitHub",
+      "Conduct natural, conversational interviews using advanced AI voice technology with real-time transcription.",
+    link: "/dashboard",
+    icon: "messages",
   },
   {
-    title: "Feature 4",
+    title: "Smart Shortlisting",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "laptop",
+      "AI automatically creates shortlists of top candidates, saving hours of manual screening time.",
+    link: "/shortlist",
+    icon: "star",
   },
   {
-    title: "Feature 5",
+    title: "Interview Analytics",
     description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
+      "Get detailed insights on candidate performance with comprehensive interview analytics and scoring.",
+    link: "/dashboard/charts",
+    icon: "lineChart",
+  },
+  {
+    title: "Team Collaboration",
+    description:
+      "Collaborate with your recruitment team, share candidate evaluations, and make collective hiring decisions.",
+    link: "/dashboard",
     icon: "user",
-  },
-  {
-    title: "Feature 6",
-    description:
-      "Amet praesentium deserunt ex commodi tempore fuga voluptatem. Sit, sapiente.",
-    link: "/",
-    icon: "copy",
   },
 ];
 
 export const testimonials: TestimonialType[] = [
   {
-    name: "John Doe",
-    job: "Full Stack Developer",
-    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    name: "Sarah Chen",
+    job: "HR Director at TechCorp",
+    image: "https://randomuser.me/api/portraits/women/1.jpg",
     review:
-      "The next-saas-stripe-starter repo has truly revolutionized my development workflow. With its comprehensive features and seamless integration with Stripe, I've been able to build and deploy projects faster than ever before. The documentation is clear and concise, making it easy to navigate through the setup process. I highly recommend next-saas-stripe-starter to any developer.",
+      "Resume Hero has completely transformed our hiring process. The AI-powered CV screening saves us 80% of our time, and the voice interviews provide insights we never had before. We've reduced our time-to-hire from 6 weeks to 2 weeks!",
   },
   {
-    name: "Alice Smith",
-    job: "UI/UX Designer",
-    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    name: "Marcus Johnson",
+    job: "Talent Acquisition Manager",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I've been able to create modern and attractive user interfaces in record time. The starter kit provides a solid foundation for building sleek and intuitive designs, allowing me to focus more on the creative aspects of my work.",
+      "The smart shortlisting feature is incredible. It consistently identifies candidates we would have missed in manual screening. Our quality of hires has improved significantly since using Resume Hero.",
   },
   {
-    name: "David Johnson",
-    job: "DevOps Engineer",
-    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    name: "Lisa Rodriguez",
+    job: "Recruitment Team Lead",
+    image: "https://randomuser.me/api/portraits/women/3.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I was able to streamline the entire process and get payments up and running in no time. ",
+      "The AI voice interviews are game-changing. Candidates love the convenience, and we get consistent, bias-free evaluations. The real-time transcription and analytics help us make better hiring decisions.",
   },
   {
-    name: "Michael Wilson",
-    job: "Project Manager",
-    image: "https://randomuser.me/api/portraits/men/5.jpg",
+    name: "James Thompson",
+    job: "Head of People Operations",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
     review:
-      "I'm impressed by the quality of code and clear documentation of next-saas-stripe-starter. Kudos to the team!",
+      "Resume Hero's team collaboration features allow our distributed hiring team to work seamlessly together. The candidate scoring system ensures we're all evaluating on the same criteria.",
   },
   {
-    name: "Sophia Garcia",
-    job: "Data Analyst",
-    image: "https://randomuser.me/api/portraits/women/6.jpg",
+    name: "Amanda Davis",
+    job: "Senior Recruiter",
+    image: "https://randomuser.me/api/portraits/women/5.jpg",
     review:
-      "next-saas-stripe-starter provided me with the tools I needed to efficiently manage user data. Thank you so much!",
+      "I was skeptical about AI interviews at first, but the natural conversation flow and intelligent questions have impressed both our team and candidates. It's like having an expert interviewer available 24/7.",
   },
   {
-    name: "Emily Brown",
-    job: "Marketing Manager",
-    image: "https://randomuser.me/api/portraits/women/4.jpg",
+    name: "David Park",
+    job: "VP of Human Resources",
+    image: "https://randomuser.me/api/portraits/men/6.jpg",
     review:
-      "next-saas-stripe-starter has been an invaluable asset in my role as a marketing manager. With its seamless integration with Stripe, I've been able to launch targeted marketing campaigns with built-in payment functionality, allowing us to monetize our products and services more effectively.",
+      "The analytics dashboard gives us insights into our hiring patterns we never had before. We can now optimize our job descriptions and interview processes based on real data. ROI has been outstanding.",
   },
   {
-    name: "Jason Stan",
-    job: "Web Designer",
-    image: "https://randomuser.me/api/portraits/men/9.jpg",
+    name: "Rachel Kim",
+    job: "Talent Sourcing Specialist",
+    image: "https://randomuser.me/api/portraits/women/7.jpg",
     review:
-      "Thanks to next-saas-stripe-starter, I've been able to create modern and attractive user interfaces in record time. The starter kit provides a solid foundation for building sleek and intuitive designs, allowing me to focus more on the creative aspects of my work.",
+      "Resume Hero's job description matching is incredibly accurate. It understands not just keywords but the actual skills and experience needed. Our candidate quality has never been better.",
   },
 ];
