@@ -23,8 +23,6 @@ import ProjectSwitcher from "@/components/dashboard/project-switcher";
 import { UpgradeCard } from "@/components/dashboard/upgrade-card";
 import { Icons } from "@/components/shared/icons";
 
-import JDSwitcherClient from "../dashboard/jd-switcher";
-
 interface DashboardSidebarProps {
   links: SidebarNavItem[];
 }
@@ -73,12 +71,13 @@ export function DashboardSidebar({ links }: DashboardSidebarProps) {
             )}
           >
             <div className="flex h-full max-h-screen flex-1 flex-col gap-2">
-              <div className="flex h-14 items-center justify-between gap-2 p-4 lg:h-[60px]">
-                {isSidebarExpanded ? (
-                  <div className="min-w-0 flex-1">
-                    <JDSwitcherClient />
+              <div className="flex h-14 items-center justify-between p-4 lg:h-[60px]">
+                {isSidebarExpanded && (
+                  <div className="flex items-center gap-2">
+                    <Icons.logo className="size-6" />
+                    <span className="font-semibold">Resume Hero</span>
                   </div>
-                ) : null}
+                )}
 
                 <Button
                   variant="ghost"

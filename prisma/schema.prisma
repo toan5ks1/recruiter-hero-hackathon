@@ -1,18 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider     = "postgresql"
-  url          = env("DATABASE_URL")
-}
-
-enum UserRole {
-  ADMIN
-  USER
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -21,21 +13,20 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?  @db.Text
-  access_token      String?  @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?  @db.Text
+  id_token          String?
   session_state     String?
-  createdAt         DateTime @default(now()) @map(name: "created_at")
-  updatedAt         DateTime @default(now()) @map(name: "updated_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @default(now()) @map("updated_at")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
-  @@map(name: "accounts")
+  @@map("accounts")
 }
 
 model Session {
@@ -46,29 +37,27 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@map(name: "sessions")
+  @@map("sessions")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
-  role          UserRole  @default(USER)
-
-  accounts Account[]
-  sessions Session[]
-
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
-  stripePriceId          String?   @map(name: "stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+  id                     String           @id @default(cuid())
+  name                   String?
+  email                  String?          @unique
+  emailVerified          DateTime?
+  image                  String?
+  createdAt              DateTime         @default(now()) @map("created_at")
+  updatedAt              DateTime         @default(now()) @map("updated_at")
+  role                   UserRole         @default(USER)
+  stripeCustomerId       String?          @unique @map("stripe_customer_id")
+  stripeSubscriptionId   String?          @unique @map("stripe_subscription_id")
+  stripePriceId          String?          @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime?        @map("stripe_current_period_end")
+  accounts               Account[]
   jobDescriptions        JobDescription[]
+  sessions               Session[]
 
-  @@map(name: "users")
+  @@map("users")
 }
 
 model VerificationToken {
@@ -77,66 +66,101 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-  @@map(name: "verification_tokens")
+  @@map("verification_tokens")
 }
 
 model JobDescription {
-  id        String @id @default(cuid())
+  id        String   @id @default(cuid())
   title     String
   content   String
   createdAt DateTime @default(now())
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
   cvs       CV[]
+  user      User     @relation(fields: [userId], references: [id])
 
-  @@map(name: "job_descriptions")
+  @@map("job_descriptions")
 }
 
 model CV {
-  id               String   @id @default(cuid())
-  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id])
-  jobDescriptionId String
-  fileName         String
-  content          String
-  fileUrl          String?
-  resume           Json 
-  score            Json
-
-  totalScore       Float?
-  status           String @default("created")
-
-  uploadedAt       DateTime @default(now())
-  shortlisted      Boolean @default(false)
-  reviewerNote     String?
-
-  // Interview system fields
-  interviewStage      String?
+  id                   String           @id @default(cuid())
+  jobDescriptionId     String
+  fileUrl              String?
+  totalScore           Float?
+  uploadedAt           DateTime         @default(now())
+  shortlisted          Boolean          @default(false)
+  reviewerNote         String?
+  content              String
+  fileName             String
+  interviewFeedback    Json?
+  interviewNotes       String?
+  interviewQuestions   Json?
   interviewScheduledAt DateTime?
-  interviewNotes      String?
-  interviewQuestions  Json?
-  interviewFeedback   Json?
+  interviewStage       String?
+  resume               Json
+  score                Json
+  status               String           @default("created")
+  aiCallNotes          String?
+  callResult           String?
+  callStatus           String?
+  lastCallDate         DateTime?
+  aiCalls              AICall[]
+  jobDescription       JobDescription   @relation(fields: [jobDescriptionId], references: [id])
+  interviewRounds      InterviewRound[]
 
-  interviewRounds InterviewRound[]
-
-  @@map(name: "cvs")
+  @@map("cvs")
 }
 
 model InterviewRound {
-  id              String    @id @default(cuid())
-  cv              CV        @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  cvId            String
-  roundType       String    // phone, technical, panel, final
-  scheduledAt     DateTime?
-  durationMinutes Int       @default(60)
+  id               String    @id @default(cuid())
+  cvId             String
+  roundType        String
+  scheduledAt      DateTime?
+  durationMinutes  Int       @default(60)
   interviewerEmail String?
-  interviewerName String?
-  status          String    @default("scheduled") // scheduled, completed, cancelled, rescheduled
-  questions       Json?
-  feedback        Json?
-  rating          Int?      // 1-5 rating
-  notes           String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  interviewerName  String?
+  status           String    @default("scheduled")
+  questions        Json?
+  feedback         Json?
+  rating           Int?
+  notes            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  cv               CV        @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
-  @@map(name: "interview_rounds")
+  @@map("interview_rounds")
+}
+
+model AICall {
+  id                 String    @id @default(cuid())
+  cvId               String
+  scheduledAt        DateTime
+  startedAt          DateTime?
+  endedAt            DateTime?
+  duration           Int
+  candidatePhone     String
+  aiVoice            String    @default("sarah")
+  customInstructions String?
+  questions          Json?
+  transcript         Json?
+  aiAnalysis         Json?
+  status             String    @default("scheduled")
+  result             String?
+  score              Int?
+  notes              String?
+  createdBy          String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  candidateEmail     String?
+  candidateName      String?
+  interviewMode      String    @default("link") // "phone" or "link"
+  interviewLink      String?   @unique
+  linkGeneratedAt    DateTime?
+  cv                 CV        @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+  @@map("ai_calls")
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

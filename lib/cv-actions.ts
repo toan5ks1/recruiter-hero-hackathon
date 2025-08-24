@@ -7,14 +7,7 @@ import { prisma } from "./db";
 
 export async function updateCVStatus(
   cvId: string,
-  status:
-    | "processing"
-    | "cancelled"
-    | "success"
-    | "qualified"
-    | "disqualified"
-    | "interview_scheduled"
-    | "interview_completed",
+  status: "processing" | "cancelled" | "success" | "qualified" | "disqualified",
 ) {
   const session = await auth();
 

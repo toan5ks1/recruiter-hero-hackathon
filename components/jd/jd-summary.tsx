@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { JobDescription } from "@prisma/client";
-import { Edit3, ExternalLink, FileText, Upload } from "lucide-react";
+import { Edit3, ExternalLink, FileText, Star, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,6 +43,12 @@ export const JDSummary: React.FC<JDSummaryProps> = ({ jd, onUpdate }) => {
                 <Upload className="h-4 w-4" />
                 Upload Resumes
               </Button>
+              <Link href={`/shortlist?job=${jd.id}`}>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Star className="h-4 w-4" />
+                  View Shortlist
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="sm"

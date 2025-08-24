@@ -1,11 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, Clock, Mail, MessageSquare, User } from "lucide-react";
+import { format } from "date-fns";
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  Mail,
+  MessageSquare,
+  User,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { createInterviewRound } from "@/lib/interview-actions";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +23,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -74,7 +88,8 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     roundType: "" as "phone" | "technical" | "panel" | "final" | "",
-    scheduledAt: "",
+    scheduledDate: undefined as Date | undefined,
+    scheduledTime: "09:00",
     durationMinutes: 60,
     interviewerName: "",
     interviewerEmail: "",
@@ -117,14 +132,23 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      if (!formData.roundType || !formData.scheduledAt) {
+      if (
+        !formData.roundType ||
+        !formData.scheduledDate ||
+        !formData.scheduledTime
+      ) {
         throw new Error("Please fill in all required fields");
       }
+
+      // Combine date and time
+      const [hours, minutes] = formData.scheduledTime.split(":").map(Number);
+      const scheduledDateTime = new Date(formData.scheduledDate);
+      scheduledDateTime.setHours(hours, minutes, 0, 0);
 
       await createInterviewRound({
         cvId,
         roundType: formData.roundType,
-        scheduledAt: new Date(formData.scheduledAt),
+        scheduledAt: scheduledDateTime,
         durationMinutes: formData.durationMinutes,
         interviewerName: formData.interviewerName || undefined,
         interviewerEmail: formData.interviewerEmail || undefined,
@@ -138,7 +162,8 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       // Reset form
       setFormData({
         roundType: "",
-        scheduledAt: "",
+        scheduledDate: undefined,
+        scheduledTime: "09:00",
         durationMinutes: 60,
         interviewerName: "",
         interviewerEmail: "",
@@ -179,14 +204,53 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="scheduledAt">Date & Time</Label>
+              <Label>Interview Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !formData.scheduledDate && "text-muted-foreground",
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 size-4" />
+                    {formData.scheduledDate ? (
+                      format(formData.scheduledDate, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={formData.scheduledDate}
+                    onSelect={(date) =>
+                      setFormData({ ...formData, scheduledDate: date })
+                    }
+                    disabled={(date) =>
+                      date < new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="scheduledTime">Interview Time</Label>
+            <div className="relative">
+              <Clock className="absolute left-3 top-3 size-4 text-muted-foreground" />
               <Input
-                id="scheduledAt"
-                type="datetime-local"
-                value={formData.scheduledAt}
+                id="scheduledTime"
+                type="time"
+                value={formData.scheduledTime}
                 onChange={(e) =>
-                  setFormData({ ...formData, scheduledAt: e.target.value })
+                  setFormData({ ...formData, scheduledTime: e.target.value })
                 }
+                className="pl-9"
                 required
               />
             </div>
@@ -196,7 +260,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
             <div className="space-y-2">
               <Label htmlFor="interviewerName">Interviewer Name</Label>
               <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <User className="absolute left-3 top-3 size-4 text-muted-foreground" />
                 <Input
                   id="interviewerName"
                   placeholder="John Doe"
@@ -215,7 +279,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
             <div className="space-y-2">
               <Label htmlFor="interviewerEmail">Interviewer Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute left-3 top-3 size-4 text-muted-foreground" />
                 <Input
                   id="interviewerEmail"
                   type="email"
@@ -236,7 +300,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           <div className="space-y-2">
             <Label htmlFor="duration">Duration (minutes)</Label>
             <div className="relative">
-              <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Clock className="absolute left-3 top-3 size-4 text-muted-foreground" />
               <Input
                 id="duration"
                 type="number"

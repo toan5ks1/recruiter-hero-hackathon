@@ -27,6 +27,7 @@ import {
   Puzzle,
   Search,
   Settings,
+  Star,
   SunMedium,
   Trash,
   User,
@@ -132,6 +133,7 @@ export const Icons = {
       />
     </svg>
   ),
+  star: Star,
   user: User,
   warning: AlertTriangle,
 };
